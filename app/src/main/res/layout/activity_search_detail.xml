@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_bar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal"
+        android:id="@+id/search"
+        tools:ignore="MissingConstraints">
+
+        <!-- 搜索输入框 -->
+        <ImageView
+            android:id="@+id/search_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="10dp"
+
+            android:background="@drawable/baseline_chevron_left_50" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            tools:ignore="MissingConstraints">
+
+            <!-- 搜索输入框 -->
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/search_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/search_bgd"
+
+                >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:id="@+id/searchEditText2"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_height="28dp"
+                        android:textSize="15sp"
+                        android:hint="在此输入您想要搜索的内容"
+                        android:background="@null"
+                        android:imeOptions="actionDone"
+                         />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/search_img"
+                    android:layout_width="55dp"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+
+                    android:background="@drawable/search_blue" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_margin="10dp"
+            android:text="历史搜索"/>
+
+        <LinearLayout
+            android:id="@+id/search_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_margin="10dp"
+            android:text="猜你可能在找"/>
+
+        <LinearLayout
+            android:id="@+id/search_guess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

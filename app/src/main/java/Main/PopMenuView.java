@@ -3,10 +3,10 @@ package Main;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -15,15 +15,7 @@ import android.widget.Toast;
 
 import com.example.login.R;
 
-/**
- * PopMenuView
- *
- * @author PengZhenjin
- * @date 2017-9-11
- */
 public class PopMenuView {
-
-    private static final String TAG = "PopMenuView";
 
     public static PopMenuView getInstance() {
         return PopupMenuViewHolder.INSTANCE;
@@ -37,8 +29,8 @@ public class PopMenuView {
     private PopupWindow mPopupWindow;
 
     private RelativeLayout mCloseLayout;
-    private ImageView      mCloseIv;
-    private LinearLayout   mTest1Layout, mTest2Layout, mTest3Layout, mTest4Layout, mTest5Layout, mTest6Layout, mTest7Layout, mTest8Layout;
+    private ImageView      mCloseIv, slogan;
+    private ImageButton button,button_AI;
 
     /**
      * 动画执行的 属性值数组
@@ -58,15 +50,13 @@ public class PopMenuView {
     /**
      * 创建PopupWindow
      *
-     * @param context
      */
     @SuppressLint("ResourceType")
     private void createView(final Context context) {
-        this.mRootVew = LayoutInflater.from(context).inflate(R.menu.view_pop_menu, null);
+        this.mRootVew = LayoutInflater.from(context).inflate(R.layout.view_pop_menu, null);
         this.mPopupWindow = new PopupWindow(this.mRootVew, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         this.mPopupWindow.setFocusable(false); // 设置为失去焦点 方便监听返回键的监听
-        //mPopupWindow.setClippingEnabled(false); // 如果想要popupWindow 遮挡住状态栏可以加上这句代码
-        this.mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow.setClippingEnabled(false); // 如果想要popupWindow 遮挡住状态栏可以加上这句代码
         this.mPopupWindow.setOutsideTouchable(false);
 
         if (this.mAnimatorProperty == null) {
@@ -97,25 +87,12 @@ public class PopMenuView {
     private void initLayout(Context context) {
         this.mCloseLayout = (RelativeLayout) this.mRootVew.findViewById(R.id.close_layout);
         this.mCloseIv = (ImageView) this.mRootVew.findViewById(R.id.close_iv);
-        this.mTest1Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test1_layout);
-        this.mTest2Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test2_layout);
-        this.mTest3Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test3_layout);
-        this.mTest4Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test4_layout);
-        this.mTest5Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test5_layout);
-        this.mTest6Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test6_layout);
-        this.mTest7Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test7_layout);
-        this.mTest8Layout = (LinearLayout) this.mRootVew.findViewById(R.id.test8_layout);
+        this.slogan = (ImageView) this.mRootVew.findViewById(R.id.slogan);
+        this.button = (ImageButton) this.mRootVew.findViewById(R.id.button_post);
+        this.button_AI = (ImageButton) this.mRootVew.findViewById(R.id.button_AI);
 
         this.mCloseLayout.setOnClickListener(new ItemClick(0, context));
 
-        this.mTest1Layout.setOnClickListener(new ItemClick(1, context));
-        this.mTest2Layout.setOnClickListener(new ItemClick(2, context));
-        this.mTest3Layout.setOnClickListener(new ItemClick(3, context));
-        this.mTest4Layout.setOnClickListener(new ItemClick(4, context));
-        this.mTest5Layout.setOnClickListener(new ItemClick(5, context));
-        this.mTest6Layout.setOnClickListener(new ItemClick(6, context));
-        this.mTest7Layout.setOnClickListener(new ItemClick(7, context));
-        this.mTest8Layout.setOnClickListener(new ItemClick(8, context));
     }
 
     /**
@@ -150,15 +127,9 @@ public class PopMenuView {
         objectAnimator.setDuration(200);
         objectAnimator.start();
 
-        startAnimation(this.mTest1Layout, 500, this.mAnimatorProperty);
-        startAnimation(this.mTest2Layout, 430, this.mAnimatorProperty);
-        startAnimation(this.mTest3Layout, 430, this.mAnimatorProperty);
-        startAnimation(this.mTest4Layout, 500, this.mAnimatorProperty);
-
-        startAnimation(this.mTest5Layout, 500, this.mAnimatorProperty);
-        startAnimation(this.mTest6Layout, 430, this.mAnimatorProperty);
-        startAnimation(this.mTest7Layout, 430, this.mAnimatorProperty);
-        startAnimation(this.mTest8Layout, 500, this.mAnimatorProperty);
+        startAnimation(this.slogan, 300, this.mAnimatorProperty);
+        startAnimation(this.button, 400, this.mAnimatorProperty);
+        startAnimation(this.button_AI, 500, this.mAnimatorProperty);
     }
 
     /**
@@ -170,21 +141,11 @@ public class PopMenuView {
             objectAnimator.setDuration(300);
             objectAnimator.start();
 
-            closeAnimation(this.mTest1Layout, 300, this.mTop);
-            closeAnimation(this.mTest2Layout, 200, this.mTop);
-            closeAnimation(this.mTest3Layout, 200, this.mTop);
-            closeAnimation(this.mTest4Layout, 300, this.mTop);
-            closeAnimation(this.mTest5Layout, 300, this.mBottom);
-            closeAnimation(this.mTest6Layout, 200, this.mBottom);
-            closeAnimation(this.mTest7Layout, 200, this.mBottom);
-            closeAnimation(this.mTest8Layout, 300, this.mBottom);
+            closeAnimation(this.slogan, 300, this.mTop);
+            closeAnimation(this.button, 300, this.mTop);
+            closeAnimation(this.button_AI, 300, this.mTop);
 
-            this.mCloseLayout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    close();
-                }
-            }, 300);
+            this.mCloseLayout.postDelayed(this::close, 300);
         }
     }
 

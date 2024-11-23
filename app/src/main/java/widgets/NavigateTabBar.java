@@ -23,12 +23,6 @@ import com.example.login.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * NavigateTabBar
- *
- * @author PengZhenjin
- * @date 2017-9-11
- */
 public class NavigateTabBar extends LinearLayout implements View.OnClickListener {
 
     private static final String KEY_CURRENT_TAG = "NavigateTabBar";
@@ -107,13 +101,7 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
      * @param tabParam
      */
     public void addTab(Class frameLayoutClass, TabParam tabParam) {
-        int defaultLayout = R.menu.view_navigate_tabbar;
-        //        if (tabParam.tabViewResId > 0) {
-        //            defaultLayout = tabParam.tabViewResId;
-        //        }
-        //if (TextUtils.isEmpty(tabParam.title)) {
-        //    tabParam.title = getContext().getString(tabParam.titleStringRes);
-        //}
+        int defaultLayout = R.layout.view_navigate_tabbar;
 
         View view = LayoutInflater.from(getContext()).inflate(defaultLayout, null);
         view.setFocusable(true);
@@ -273,7 +261,6 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
      *
      * @param tag
      *
-     * @return
      */
     private Fragment getFragmentInstance(String tag) {
         Fragment fragment = null;
@@ -466,7 +453,6 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
     /**
      * 设置tab选中监听器
      *
-     * @param tabSelectListener
      */
     public void setTabSelectListener(OnTabSelectedListener tabSelectListener) {
         this.mTabSelectListener = tabSelectListener;
@@ -475,7 +461,6 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
     /**
      * 设置默认选中的tab
      *
-     * @param index
      */
     public void setDefaultSelectedTab(int index) {
         if (index >= 0 && index < this.mViewHolderList.size()) {
@@ -486,7 +471,6 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
     /**
      * 设置当前选中的tab
      *
-     * @param index
      */
     public void setCurrentSelectedTab(int index) {
         if (index >= 0 && index < this.mViewHolderList.size()) {
@@ -498,7 +482,6 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
     /**
      * 获取当前选中的tab
      *
-     * @return
      */
     public int getCurrentSelectedTab() {
         return this.mCurrentSelectedTab;

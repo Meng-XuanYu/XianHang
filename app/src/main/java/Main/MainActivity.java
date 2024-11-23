@@ -5,17 +5,17 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.login.R;
-
 import widgets.NavigateTabBar;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG_PAGE_HOME    = "首页";
-    private static final String TAG_PAGE_CITY    = "同城";
-    private static final String TAG_PAGE_MORE    = "发布";
+    private static final String TAG_PAGE_HOME    = "闲航";
+    private static final String TAG_PAGE_CITY    = "校区";
+    private static final String TAG_PAGE_MORE    = "发布"; //deprecated
     private static final String TAG_PAGE_MESSAGE = "消息";
     private static final String TAG_PAGE_PERSON  = "我的";
 
@@ -38,20 +38,16 @@ public class MainActivity extends AppCompatActivity {
 
         this.mNavigateTabBar.onRestoreInstanceState(savedInstanceState);
 
-        this.mNavigateTabBar.addTab(com.pzj.navigatetabbar.fragment.HomeFragment.class, new NavigateTabBar.TabParam(R.drawable.home, R.drawable.home_filled, TAG_PAGE_HOME));
-        this.mNavigateTabBar.addTab(com.pzj.navigatetabbar.fragment.CityFragment.class, new NavigateTabBar.TabParam(R.drawable.location, R.drawable.location_filled, TAG_PAGE_CITY));
+        this.mNavigateTabBar.addTab(fragment.HomeFragment.class, new NavigateTabBar.TabParam(R.drawable.home, R.drawable.home_filled, TAG_PAGE_HOME));
+        this.mNavigateTabBar.addTab(fragment.CityFragment.class, new NavigateTabBar.TabParam(R.drawable.location, R.drawable.location_filled, TAG_PAGE_CITY));
         this.mNavigateTabBar.addTab(null, new NavigateTabBar.TabParam(0, 0, TAG_PAGE_MORE));
-        this.mNavigateTabBar.addTab(com.pzj.navigatetabbar.fragment.MessageFragment.class, new NavigateTabBar.TabParam(R.drawable.message, R.drawable.message_filled, TAG_PAGE_MESSAGE));
-        this.mNavigateTabBar.addTab(com.pzj.navigatetabbar.fragment.PersonFragment.class, new NavigateTabBar.TabParam(R.drawable.profile, R.drawable.profile_filled, TAG_PAGE_PERSON));
+        this.mNavigateTabBar.addTab(fragment.MessageFragment.class, new NavigateTabBar.TabParam(R.drawable.message, R.drawable.message_filled, TAG_PAGE_MESSAGE));
+        this.mNavigateTabBar.addTab(fragment.PersonFragment.class, new NavigateTabBar.TabParam(R.drawable.profile, R.drawable.profile_filled, TAG_PAGE_PERSON));
 
-        this.mTabMoreIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopMenuView.getInstance().show(MainActivity.this, mTabMoreIv);
-            }
-        });
+        // 点击发布按钮
+        this.mTabMoreIv.setOnClickListener(v -> PopMenuView.getInstance().show(MainActivity.this, mTabMoreIv));
 
-        // Handle back press
+        // 返回键监听
         this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -65,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         this.mNavigateTabBar.onSaveInstanceState(outState);
     }

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CommentActivity">'
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/target"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/comment_sum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:text="1条评论"
+                android:textSize="17dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/user_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    >
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/item1"
+                        android:scaleType="fitXY"
+                        app:riv_corner_radius="17dp">
+
+                    </com.makeramen.roundedimageview.RoundedImageView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="5dp"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="用户名"
+                                android:textSize="16dp"
+                                android:layout_marginTop="1dp"
+                                android:textColor="#939393"
+                                android:textStyle="bold"/>
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="校区：北京航空航天大学  学院路校区"
+                                android:background="@drawable/user_pos_bg"
+                                android:textSize="13dp"
+
+                                android:paddingLeft="4dp"
+                                android:paddingRight="2dp"
+                                android:layout_marginLeft="6dp"
+                                android:textColor="#939393"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+                            android:textSize="16dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="40dp"
+                            android:textColor="@color/black"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2024-11-15 16:33:31"
+                            android:textColor="#939393"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="10dp"/>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    >
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/item1"
+                        android:scaleType="fitXY"
+                        app:riv_corner_radius="17dp">
+
+                    </com.makeramen.roundedimageview.RoundedImageView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="5dp"
+                            >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="用户名"
+                                android:textSize="16dp"
+                                android:layout_marginTop="1dp"
+                                android:textColor="#939393"
+                                android:textStyle="bold"/>
+                            <TextView
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="校区：北京航空航天大学  学院路校区"
+                                android:background="@drawable/user_pos_bg"
+                                android:textSize="13dp"
+
+                                android:paddingLeft="4dp"
+                                android:paddingRight="2dp"
+                                android:layout_marginLeft="6dp"
+                                android:textColor="#939393"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

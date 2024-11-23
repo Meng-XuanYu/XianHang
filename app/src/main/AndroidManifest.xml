@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,13 +13,32 @@
         android:roundIcon="@drawable/xianhang_light_yuan"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name="Register.ChangeActivity"
+            android:exported="false" />
+        <activity
+            android:name="Profile.ProfileView"
+            android:exported="false" />
         <activity
             android:name="Main.MainActivity"
             android:exported="false" />
         <activity
             android:name="Register.RegisterActivity"
             android:exported="false" />
+        <activity
+            android:name="Search.SearchDetailActivity"
+            android:exported="true" />
+        <activity
+            android:name="goodsPage.FullscreenActivity"
+            android:exported="true" />
+        <activity
+            android:name="goodsPage.ItemDetailActivity"
+            android:exported="true" />
+        <activity
+            android:name="Main.SearchDoneActivity"
+            android:exported="true" />
         <activity
             android:name="Login.LoginActivity"
             android:exported="true">

@@ -1,50 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent">
 
+    <!-- 下层内容 -->
     <FrameLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:background="@android:color/white" />
 
-    <RelativeLayout
+    <!-- 上层的 tabBar -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@android:color/transparent"
-        >
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_above="@+id/main_tabbar"
-            android:background="#f1f1f1"
-            />
+        android:layout_gravity="bottom">
 
+        <!-- TabBar 背景 -->
         <widgets.NavigateTabBar
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/main_tabbar"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/white"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
             app:containerId="@+id/main_container"
             app:navigateTabSelectedTextColor="@color/blue_bh"
-            app:navigateTabTextColor="@color/gray"
-            />
+            app:navigateTabTextColor="@color/gray" />
 
+        <!-- 悬浮按钮 -->
         <ImageView
             android:id="@+id/tab_more_iv"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="10dp"
-            android:layout_centerHorizontal="true"
             android:contentDescription="@null"
-            android:src="@drawable/navigate_post"
-            />
-    </RelativeLayout>
-</LinearLayout>
+            android:src="@drawable/navigate_post" />
+    </FrameLayout>
+</FrameLayout>
