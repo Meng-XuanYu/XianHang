@@ -177,7 +177,7 @@
                 </LinearLayout>
 
                 <ImageButton
-                    android:id="@+id/button_brush"
+                    android:id="@+id/button_setting"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentBottom="true"

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -36,21 +37,31 @@ import com.example.login.R;
 import Main.MainActivity;
 import Register.ChangeActivity;
 import Register.RegisterActivity;
+import model.GetAttractivenessResponse;
+import model.GetMoneyResponse;
+import model.GetProfileResponse;
 import model.LoginRequest;
 import model.LoginResponse;
 import network.ApiService;
 import retrofit2.Call;
 import RetrofitClient.RetrofitClient;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.snackbar.Snackbar;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
     private boolean isPasswordVisible = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private boolean isUserProfileFetched = false;
+    private boolean isMoneyFetched = false;
+    private boolean isAttractivenessFetched = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,9 +172,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             // 发送登录请求
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish(); // Optional: close the LoginActivity
+            sendLoginRequest();
         });
     }
 
@@ -227,41 +236,208 @@ public class LoginActivity extends AppCompatActivity {
                     LoginResponse loginResponse = response.body();
                     if ("success".equals(loginResponse.getStatus())) {
                         // 登录成功
-                        showAlertDialog(loginResponse.getMessage());
+                        Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.d("Login", "Success: " + loginResponse.getMessage());
-                        // 这里可以跳转页面或保存登录状态
-                        saveUserId(userId);
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish(); // Optional: close the LoginActivity
+                        // 单独保存 userId 到 SharedPreferences
+                        saveUserIdToPreferences(userId);
+
+                        // 获取用户的详细信息并存储到 SharedPreferences
+                        fetchUserDetails(userId);
                     } else {
                         // 登录失败
-                        showAlertDialog(loginResponse.getMessage());
+                        Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.e("Login", "Error: " + loginResponse.getMessage());
                     }
                 } else {
-                    // 服务器错误
-                    showAlertDialog("Server Error: " + response.code());
-                    Log.e("Login", "Response failed: " + response.code());
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("Login", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("Login", "Error parsing error body: ", e);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                // 网络请求失败
-                showAlertDialog("Request Failed: " + t.getMessage());
+                Toast.makeText(LoginActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Login", "Request Failed: " + t.getMessage());
             }
         });
     }
 
-    // 保存用户 ID 到 SharedPreferences
-    private void saveUserId(String userId) {
+    private void saveUserIdToPreferences(String userId) {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("userId", userId);
-        editor.apply(); // 异步保存
-        Log.d("SharedPreferences", "User ID saved: " + userId);
+        editor.putString("userId", userId); // 单独存储 userId
+        editor.apply();
+    }
+
+    private void fetchUserDetails(String userId) {
+        fetchUserProfile(userId);
+        fetchUserMoney(userId);
+        fetchUserAttractiveness(userId);
+    }
+
+    private void fetchUserProfile(String userId) {
+        // 使用单例 RetrofitClient 获取 ApiService
+        ApiService apiService = RetrofitClient.getApiService();
+
+        // 发送 GET 请求获取用户信息
+        apiService.getProfile(userId).enqueue(new Callback<GetProfileResponse>() {
+            @Override
+            public void onResponse(Call<GetProfileResponse> call, Response<GetProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetProfileResponse profileResponse = response.body();
+                    if ("success".equals(profileResponse.getStatus())) {
+                        // 将用户数据存储到 SharedPreferences
+                        saveUserToPreferences(profileResponse);
+                        isUserProfileFetched = true;
+                        checkAllDataFetched();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "获取用户信息失败: " + profileResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("getProfile", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("getProfile", "Error parsing error body: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetProfileResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("getProfile", "Request Failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void fetchUserMoney(String userId) {
+        // 使用单例 RetrofitClient 获取 ApiService
+        ApiService apiService = RetrofitClient.getApiService();
+
+        apiService.getMoney(userId).enqueue(new Callback<GetMoneyResponse>() {
+            @Override
+            public void onResponse(Call<GetMoneyResponse> call, Response<GetMoneyResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetMoneyResponse moneyResponse = response.body();
+                    if ("success".equals(moneyResponse.getStatus())) {
+                        saveUserMoneyToPreferences(moneyResponse.getMoney());
+                        isMoneyFetched = true;
+                        checkAllDataFetched();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "获取余额失败: " + moneyResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("getMoney", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("getMoney", "Error parsing error body: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetMoneyResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("getMoney", "Request Failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void fetchUserAttractiveness(String userId) {
+        // 使用单例 RetrofitClient 获取 ApiService
+        ApiService apiService = RetrofitClient.getApiService();
+
+        apiService.getAttractiveness(userId).enqueue(new Callback<GetAttractivenessResponse>() {
+            @Override
+            public void onResponse(Call<GetAttractivenessResponse> call, Response<GetAttractivenessResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetAttractivenessResponse attractivenessResponse = response.body();
+                    if ("success".equals(attractivenessResponse.getStatus())) {
+                        saveUserAttractivenessToPreferences(attractivenessResponse.getAttractiveness());
+                        isAttractivenessFetched = true;
+                        checkAllDataFetched();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "获取航力值失败: " + attractivenessResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("getAttractiveness", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("getAttractiveness", "Error parsing error body: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetAttractivenessResponse> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("getAttractiveness", "Request Failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void saveUserToPreferences(GetProfileResponse userProfile) {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // 使用 Gson 将用户对象转为 JSON 字符串
+        Gson gson = new Gson();
+        String userJson = gson.toJson(userProfile);
+
+        editor.putString("userProfile", userJson);
+        editor.apply();
+
+        Log.d("MainActivity", "用户数据已存储: " + userJson);
+    }
+
+    private void saveUserMoneyToPreferences(double money) {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("userMoney", (float) money);
+        editor.apply();
+    }
+
+    private void saveUserAttractivenessToPreferences(int attractiveness) {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("userAttractiveness", (float) attractiveness);
+        editor.apply();
+    }
+
+    private void checkAllDataFetched() {
+        if (isUserProfileFetched && isMoneyFetched && isAttractivenessFetched) {
+            // 跳转到主页
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void showAlertDialog(String message) {

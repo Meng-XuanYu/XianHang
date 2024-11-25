@@ -16,6 +16,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name="Profile.CreateUserInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name="Message.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name="Register.ChangeActivity"
             android:exported="false" />
         <activity
@@ -34,10 +40,31 @@
             android:name="goodsPage.FullscreenActivity"
             android:exported="true" />
         <activity
+            android:name="Profile.EditUserInfoActivity"
+            android:exported="true" />
+        <activity
+            android:name="Profile.SetBriefActivity"
+            android:exported="true" />
+        <activity
+            android:name="Profile.SetNicknameActivity"
+            android:exported="true" />
+        <activity
             android:name="goodsPage.ItemDetailActivity"
             android:exported="true" />
         <activity
             android:name="Main.SearchDoneActivity"
+            android:exported="true" />
+        <activity
+            android:name="Main.UnusedActivity"
+            android:exported="true" />
+        <activity
+            android:name="Profile.HistoryActivity"
+            android:exported="true" />
+        <activity
+            android:name="Profile.CollectActivity"
+            android:exported="true" />
+        <activity
+            android:name="Main.sortActivity"
             android:exported="true" />
         <activity
             android:name="Login.LoginActivity"

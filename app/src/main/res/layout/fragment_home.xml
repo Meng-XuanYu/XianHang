@@ -49,236 +49,267 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:background="#f6f6f6">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/middle">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#f6f6f6">
 
-            <HorizontalScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:scrollbars="none"
-                android:layout_height="match_parent">
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/middle">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/book" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="书籍"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:scrollbars="none"
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/richang" />
-
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/book"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="日常"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/book" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/cloth" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="书籍"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/richang"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="衣物"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/richang" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/shuma" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="日常"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/cloth"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="数码"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/cloth" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/food" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="衣物"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/shuma"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="食品"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/shuma" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/sushe" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="数码"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/food"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="宿舍用品"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/food" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/game" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="食品"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/sushe"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="游戏"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/sushe" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/fuwu" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="宿舍用品"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/game"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="服务"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
-                    </LinearLayout>
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:gravity="center">
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/game" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/shoe" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="游戏"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
+                            android:id="@+id/fuwu"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="鞋子"
-                            android:textSize="12sp"
-                            android:layout_marginTop="5dp" />
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/fuwu" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="服务"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/shoe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/shoe" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="鞋子"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/other"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/other" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="其他"
+                                android:textSize="12sp"
+                                android:layout_marginTop="5dp" />
+                        </LinearLayout>
+
                     </LinearLayout>
-
-                </LinearLayout>
-            </HorizontalScrollView>
-        </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                </HorizontalScrollView>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -310,6 +341,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </androidx.appcompat.widget.LinearLayoutCompat>

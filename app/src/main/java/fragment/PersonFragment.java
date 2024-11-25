@@ -21,7 +21,11 @@ import androidx.fragment.app.Fragment;
 import com.example.login.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.json.JSONObject;
+
 import Login.LoginActivity;
+import Profile.CollectActivity;
+import Profile.HistoryActivity;
 import Profile.ProfileView;
 import model.LogoutResponse;
 import network.ApiService;
@@ -50,6 +54,22 @@ public class PersonFragment extends Fragment {
 
         LinearLayout buttonRecharge = view.findViewById(R.id.chongzhi);
         buttonRecharge.setOnClickListener(v -> showRechargeDialog());
+
+        // 我的收藏
+        LinearLayout buttonCollection = view.findViewById(R.id.my_star);
+        buttonCollection.setOnClickListener(v -> {
+            // 跳转到我的收藏页面
+            Intent intent = new Intent(requireActivity(), CollectActivity.class);
+            startActivity(intent);
+        });
+
+        // 我的浏览
+        LinearLayout buttonHistory = view.findViewById(R.id.my_history);
+        buttonHistory.setOnClickListener(v -> {
+            // 跳转到我的浏览页面
+            Intent intent = new Intent(requireActivity(), HistoryActivity.class);
+            startActivity(intent);
+        });
 
         return view;
     }
@@ -85,7 +105,9 @@ public class PersonFragment extends Fragment {
 
     // 发送退出登录请求
     private void sendLogoutRequest() {
+        // 初始化 Retrofit ApiService
         ApiService apiService = RetrofitClient.getApiService();
+
         apiService.logout().enqueue(new Callback<LogoutResponse>() {
             @Override
             public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
@@ -102,11 +124,20 @@ public class PersonFragment extends Fragment {
                         startActivity(intent);
                         requireActivity().finish();
                     } else {
-                        Toast.makeText(requireActivity(), "登出失败: " + logoutResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "注销失败: " + logoutResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(requireActivity(), "服务器错误: " + response.code(), Toast.LENGTH_SHORT).show();
-                    Log.e("Logout", "Error: " + response.code());
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("Logout", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(requireActivity(), "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("Logout", "Error parsing error body: ", e);
+                    }
                 }
             }
 
@@ -122,8 +153,11 @@ public class PersonFragment extends Fragment {
     private void clearUserData() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
+        // 清除单独存储的 userId 和 userProfile
+        editor.remove("userId");
+        editor.remove("userProfile");
+
         editor.apply();
-        Log.d("SharedPreferences", "User data cleared.");
+        Log.d("SharedPreferences", "用户数据已清除: userId 和 userProfile");
     }
 }

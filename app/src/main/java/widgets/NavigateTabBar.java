@@ -1,5 +1,6 @@
 package widgets;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -71,6 +72,7 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         this(context, attrs, 0);
     }
 
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     public NavigateTabBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.NavigateTabBar, 0, 0);

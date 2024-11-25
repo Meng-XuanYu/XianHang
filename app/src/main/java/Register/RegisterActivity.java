@@ -18,9 +18,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import RetrofitClient.RetrofitClient;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
@@ -35,14 +36,16 @@ import com.bumptech.glide.request.target.Target;
 import com.example.login.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.json.JSONObject;
+
 import Login.LoginActivity;
+import Main.MainActivity;
 import model.RegisterRequest;
 import model.RegisterResponse;
 import network.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import RetrofitClient.RetrofitClient;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -206,31 +209,41 @@ public class RegisterActivity extends AppCompatActivity {
         // 发送注册请求
         apiService.register(registerRequest).enqueue(new Callback<RegisterResponse>() {
             @Override
-            public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     RegisterResponse registerResponse = response.body();
                     if ("success".equals(registerResponse.getStatus())) {
                         // 注册成功
-                        showAlertDialog(registerResponse.getMessage());
+                        Toast.makeText(RegisterActivity.this, registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.d("Register", "Success: " + registerResponse.getMessage());
                         // 注册成功后可跳转到登录页面
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish(); // 销毁当前活动
                     } else {
                         // 注册失败
-                        showAlertDialog(registerResponse.getMessage());
+                        Toast.makeText(RegisterActivity.this, registerResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.e("Register", "Error: " + registerResponse.getMessage());
                     }
                 } else {
-                    // 服务器错误
-                    showAlertDialog("服务器错误: " + response.code());
-                    Log.e("Register", "Response failed: " + response.code());
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("Login", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("Login", "Error parsing error body: ", e);
+                    }
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<RegisterResponse> call, @NonNull Throwable t) {
-                // 网络请求失败
-                showAlertDialog("网络请求失败: " + t.getMessage());
-                Log.e("Register", "Request Failed: " + t.getMessage());
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Login", "Request Failed: " + t.getMessage());
             }
         });
     }

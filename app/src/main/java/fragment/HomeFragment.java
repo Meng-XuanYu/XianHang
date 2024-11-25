@@ -23,6 +23,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.util.Arrays;
 import java.util.List;
 
+import Main.sortActivity;
 import Search.SearchDetailActivity;
 import goodsPage.ItemDetailActivity;
 
@@ -60,6 +61,62 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
         generateLayout(this.getActivity(),items);
+
+        // 分类按钮
+        LinearLayout book = rootView.findViewById(R.id.book);
+        book.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "书籍");
+            startActivity(intent);
+        });
+
+        LinearLayout clothes = rootView.findViewById(R.id.cloth);
+        clothes.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "衣物");
+            startActivity(intent);
+        });
+
+        LinearLayout digital = rootView.findViewById(R.id.shuma);
+        digital.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "数码");
+            startActivity(intent);
+        });
+
+        LinearLayout food = rootView.findViewById(R.id.food);
+        food.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "食品");
+            startActivity(intent);
+        });
+
+        LinearLayout sushe = rootView.findViewById(R.id.sushe);
+        sushe.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "宿舍用品");
+            startActivity(intent);
+        });
+
+        LinearLayout richang = rootView.findViewById(R.id.richang);
+        richang.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "日常用品");
+            startActivity(intent);
+        });
+
+        LinearLayout other = rootView.findViewById(R.id.other);
+        other.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "其他");
+            startActivity(intent);
+        });
+
+        LinearLayout game = rootView.findViewById(R.id.game);
+        game.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "游戏");
+            startActivity(intent);
+        });
+
+        LinearLayout shoe = rootView.findViewById(R.id.shoe);
+        shoe.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), sortActivity.class).putExtra("id", "鞋子");
+            startActivity(intent);
+        });
+
         return rootView;
     }
 

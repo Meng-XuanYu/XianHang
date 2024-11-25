@@ -31,7 +31,6 @@ import com.google.android.flexbox.JustifyContent;
 import java.util.Arrays;
 import java.util.List;
 
-import Main.MainActivity;
 import Main.SearchDoneActivity;
 
 public class SearchDetailActivity extends AppCompatActivity {
@@ -54,6 +53,13 @@ public class SearchDetailActivity extends AppCompatActivity {
         editText = findViewById(R.id.searchEditText2);
         searchImage = findViewById(R.id.search_img);
 
+        // 沉浸式体验
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        );
+
         // searchImage动作
         searchImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,13 +70,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         });
 
         editText.requestFocus();
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SearchDetailActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        imageView.setOnClickListener(view -> finish());
         FlexboxLayout.LayoutParams params1 = new FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT);
         params1.setMargins(15, 10, 15, 10);
 

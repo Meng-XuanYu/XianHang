@@ -1,23 +1,18 @@
 package widgets;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 
 import com.example.login.R;
 
 
-/**
- * ThemeUtils
- *
- * @author PengZhenjin
- * @date 2017-9-11
- */
 public class ThemeUtils {
 
     private static final int[] APPCOMPAT_CHECK_ATTRS = { R.attr.navigateTabSelectedTextColor };
 
     public static void checkAppCompatTheme(Context context) {
-        TypedArray a = context.obtainStyledAttributes(APPCOMPAT_CHECK_ATTRS);
+        @SuppressLint("ResourceType") TypedArray a = context.obtainStyledAttributes(APPCOMPAT_CHECK_ATTRS);
         boolean failed = !a.hasValue(0);
         a.recycle();
         if (failed) {

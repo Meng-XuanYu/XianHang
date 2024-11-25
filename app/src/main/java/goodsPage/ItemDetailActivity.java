@@ -1,5 +1,6 @@
 package goodsPage;
 
+import android.annotation.SuppressLint;
 import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.Intent;
@@ -59,6 +60,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     );
     private List<Integer> img = Arrays.asList(R.drawable.item, R.drawable.item1);
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,13 +110,16 @@ public class ItemDetailActivity extends AppCompatActivity {
         child = findViewById(R.id.child);
         scrollView = findViewById(R.id.scrollview);
         target = findViewById(R.id.target);
+
+        // 返回按钮
         search_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ItemDetailActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
+
+        // 搜索按钮
         search_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,24 +127,21 @@ public class ItemDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        imgs.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    float x = event.getX(); // 相对于视图的 X 坐标
-                    float y = event.getY();
-                    int posx = (int) x / dpToPx(context, 186);
-                    int posy = (int) y / dpToPx(context, 220);
-                    int pos = posy * 2 + posx;
-                    Intent intent = new Intent(ItemDetailActivity.this, FullscreenActivity.class);
-                    intent.putIntegerArrayListExtra("images", imageUrls);
-//                    Log.d("TAG111", "1111: "+pos);
-                    intent.putExtra("position", pos);
-                    startActivity(intent);
-                }
-                return true;
-            }
 
+        // 评论按钮
+        imgs.setOnTouchListener((view, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                float x1 = event.getX(); // 相对于视图的 X 坐标
+                float y = event.getY();
+                int posx = (int) x1 / dpToPx(context, 186);
+                int posy = (int) y / dpToPx(context, 220);
+                int pos = posy * 2 + posx;
+                Intent intent = new Intent(ItemDetailActivity.this, FullscreenActivity.class);
+                intent.putIntegerArrayListExtra("images", imageUrls);
+                intent.putExtra("position", pos);
+                startActivity(intent);
+            }
+            return true;
         });
         child.setOnClickListener(new View.OnClickListener() {
             @Override

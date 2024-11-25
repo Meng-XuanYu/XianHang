@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class CityFragment extends Fragment {
             "￥1000", "用户1", "4.5", "商品标题1", "￥1000", "用户1", "4.5"
     );
     private List<Integer> img = Arrays.asList(R.drawable.item, R.drawable.item1);
+    private int location = 0;
 
     @Nullable
     @Override
@@ -45,16 +47,30 @@ public class CityFragment extends Fragment {
         item_show1 = view.findViewById(R.id.d_item_show1);
         item_show2 = view.findViewById(R.id.d_item_show2);
         search_layout = view.findViewById(R.id.search_layout);
+        EditText editText = view.findViewById(R.id.searchEditText1);
         pos_img = view.findViewById(R.id.pos_img);
-        pos_img.setBackgroundResource(R.drawable.old_main_building);
+        if (location == 0) {
+            pos_img.setBackgroundResource(R.drawable.xueyuanlu);
+        } else if  (location == 1) {
+            pos_img.setBackgroundResource(R.drawable.shahe);
+        } else {
+            pos_img.setBackgroundResource(R.drawable.hangzhou);
+        }
 
-        search_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        // 跳转到搜索页面
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                editText.clearFocus();
                 Intent intent = new Intent(requireActivity(), SearchDetailActivity.class);
                 startActivity(intent);
             }
         });
+
+        search_layout.setOnClickListener(view1 -> {
+            Intent intent = new Intent(requireActivity(), SearchDetailActivity.class);
+            startActivity(intent);
+        });
+
         generateLayout(requireContext(), items);
 
         return view;

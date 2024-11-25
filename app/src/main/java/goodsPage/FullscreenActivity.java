@@ -18,6 +18,13 @@ public class FullscreenActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_fullscreen);
 
+            // 沉浸式体验
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+
             ViewPager2 viewPager = findViewById(R.id.viewPager);
 
             List<Integer> imageUrls = getIntent().getIntegerArrayListExtra("images");

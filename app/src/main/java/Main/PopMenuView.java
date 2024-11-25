@@ -1,8 +1,10 @@
 package Main;
 
+
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,11 @@ import android.widget.Toast;
 
 import com.example.login.R;
 
+import Search.SearchDetailActivity;
+
 public class PopMenuView {
+
+    private MainActivity mainActivity;
 
     public static PopMenuView getInstance() {
         return PopupMenuViewHolder.INSTANCE;
@@ -66,6 +72,12 @@ public class PopMenuView {
         }
 
         this.initLayout(context);
+
+        // 发闲置按钮
+        button.setOnClickListener(view -> {
+            Intent intent = new Intent(context, UnusedActivity.class);
+            context.startActivity(intent);
+        });
     }
 
     /**
@@ -127,10 +139,11 @@ public class PopMenuView {
         objectAnimator.setDuration(200);
         objectAnimator.start();
 
-        startAnimation(this.slogan, 300, this.mAnimatorProperty);
-        startAnimation(this.button, 400, this.mAnimatorProperty);
-        startAnimation(this.button_AI, 500, this.mAnimatorProperty);
+        startAnimation(this.slogan, 300, this.mAnimatorProperty, true);
+        startAnimation(this.button, 400, this.mAnimatorProperty, false);
+        startAnimation(this.button_AI, 500, this.mAnimatorProperty, false);
     }
+
 
     /**
      * 关闭popupWindow执行的动画
@@ -141,9 +154,9 @@ public class PopMenuView {
             objectAnimator.setDuration(300);
             objectAnimator.start();
 
-            closeAnimation(this.slogan, 300, this.mTop);
-            closeAnimation(this.button, 300, this.mTop);
-            closeAnimation(this.button_AI, 300, this.mTop);
+            closeAnimation(this.slogan, 300, this.mTop, true);
+            closeAnimation(this.button, 400, this.mTop, false);
+            closeAnimation(this.button_AI, 300, this.mTop, false);
 
             this.mCloseLayout.postDelayed(this::close, 300);
         }
@@ -190,8 +203,13 @@ public class PopMenuView {
      * @param duration 执行时长
      * @param distance 执行的轨迹数组
      */
-    private void startAnimation(View view, int duration, float[] distance) {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationY", distance);
+    private void startAnimation(View view, int duration, float[] distance, boolean isSlogan) {
+        ObjectAnimator anim;
+        if (!isSlogan) {
+            anim = ObjectAnimator.ofFloat(view, "translationY", distance);
+        } else {
+            anim = ObjectAnimator.ofFloat(view, "translationY", -distance[0], -distance[distance.length - 1]);
+        }
         anim.setDuration(duration);
         anim.start();
     }
@@ -203,9 +221,15 @@ public class PopMenuView {
      * @param duration 动画执行时长
      * @param next     平移量
      */
-    private void closeAnimation(View view, int duration, int next) {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(view, "translationY", 0f, next);
+    private void closeAnimation(View view, int duration, int next, boolean isSlogan) {
+        ObjectAnimator anim;
+        if (!isSlogan) {
+            anim = ObjectAnimator.ofFloat(view, "translationY", 0f, next);
+        } else {
+            anim = ObjectAnimator.ofFloat(view, "translationY", 0f, -next);
+        }
         anim.setDuration(duration);
         anim.start();
+
     }
 }

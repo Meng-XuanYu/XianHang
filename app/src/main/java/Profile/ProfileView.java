@@ -99,6 +99,12 @@ public class ProfileView extends AppCompatActivity {
 
         // 返回按钮
         findViewById(R.id.search_back).setOnClickListener(v -> finish());
+
+        // edit button
+        findViewById(R.id.button_setting).setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileView.this, EditUserInfoActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void selectTabSell(TextView selectedTextView, ScrollView selectedContent) {
