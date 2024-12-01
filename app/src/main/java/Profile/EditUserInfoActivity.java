@@ -1,7 +1,6 @@
 package Profile;
 
 
-
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -28,8 +27,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 public class EditUserInfoActivity extends AppCompatActivity {
-    private ImageView back ;
-    private TextView nickname ;
+    private ImageView back;
+    private TextView nickname;
     private LinearLayout nickname_arrow;
     private TextView brief;
     private LinearLayout brief_arrow;
@@ -43,6 +42,7 @@ public class EditUserInfoActivity extends AppCompatActivity {
     private RoundedImageView avatar;
     private LinearLayout avatar_arrow;
     private static final int REQUEST_CODE_SELECT_IMAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,21 +59,21 @@ public class EditUserInfoActivity extends AppCompatActivity {
 
         back = findViewById(R.id.backButton);
         nickname = findViewById(R.id.nickname);
-        if(name!=null){
+        if (name != null) {
             nickname.setText(name);
         } else {
             //初次进入该页面，需要从服务器请求数据
         }
         nickname_arrow = findViewById(R.id.nickname_arrow);
-        brief= findViewById(R.id.brief);
-        brief_arrow= findViewById(R.id.brief_arrow);
-        pos= findViewById(R.id.pos);
-        pos_arrow= findViewById(R.id.pos_arrow);
-        tel= findViewById(R.id.tel);
-        tel_arrow= findViewById(R.id.tel_arrow);
-        user_id= findViewById(R.id.user_id);
-        studentId= findViewById(R.id.studentId);
-        hanglizhi= findViewById(R.id.hanglizhi);
+        brief = findViewById(R.id.brief);
+        brief_arrow = findViewById(R.id.brief_arrow);
+        pos = findViewById(R.id.pos);
+        pos_arrow = findViewById(R.id.pos_arrow);
+        tel = findViewById(R.id.tel);
+        tel_arrow = findViewById(R.id.tel_arrow);
+        user_id = findViewById(R.id.user_id);
+        studentId = findViewById(R.id.studentId);
+        hanglizhi = findViewById(R.id.hanglizhi);
         avatar = findViewById(R.id.avatar);
         avatar_arrow = findViewById(R.id.avatar_arrow);
 //        back.setOnClickListener(new View.OnClickListener() {
@@ -93,9 +93,10 @@ public class EditUserInfoActivity extends AppCompatActivity {
         nickname_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EditUserInfoActivity.this,SetNicknameActivity.class);
-                intent.putExtra("nickname",nickname.getText());
-                    startActivity(intent);
+                Intent intent = new Intent(EditUserInfoActivity.this, SetNicknameActivity.class);
+                intent.putExtra("nickname", nickname.getText());
+                intent.putExtra("edit","111");
+                startActivity(intent);
             }
         });
         pos_arrow.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +117,8 @@ public class EditUserInfoActivity extends AppCompatActivity {
         brief_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EditUserInfoActivity.this,SetBriefActivity.class);
+                Intent intent = new Intent(EditUserInfoActivity.this, SetBriefActivity.class);
+                intent.putExtra("edit","111");
                 startActivity(intent);
             }
         });
@@ -235,9 +237,9 @@ public class EditUserInfoActivity extends AppCompatActivity {
                 .setPositiveButton("确认", (dialog, which) -> {
                     EditText editTextAmount = dialogView.findViewById(R.id.edit_text_amount);
                     String str = editTextAmount.getText().toString();
-                    if(str.length()!=11){
+                    if (str.length() != 11) {
                         Toast.makeText(EditUserInfoActivity.this, "请输入输入正确的电话号码", Toast.LENGTH_SHORT).show();
-                    } else{
+                    } else {
                         tel.setText(str);
                         dialog.dismiss();
                     }

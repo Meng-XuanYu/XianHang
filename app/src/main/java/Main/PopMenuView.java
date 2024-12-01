@@ -17,11 +17,7 @@ import android.widget.Toast;
 
 import com.example.login.R;
 
-import Search.SearchDetailActivity;
-
 public class PopMenuView {
-
-    private MainActivity mainActivity;
 
     public static PopMenuView getInstance() {
         return PopupMenuViewHolder.INSTANCE;
@@ -103,32 +99,10 @@ public class PopMenuView {
         this.button = (ImageButton) this.mRootVew.findViewById(R.id.button_post);
         this.button_AI = (ImageButton) this.mRootVew.findViewById(R.id.button_AI);
 
-        this.mCloseLayout.setOnClickListener(new ItemClick(0, context));
-
-    }
-
-    /**
-     * Item点击事件
-     */
-    private class ItemClick implements View.OnClickListener {
-
-        private int     index;
-        private Context context;
-
-        public ItemClick(int index, Context context) {
-            this.index = index;
-            this.context = context;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (index == 0) {   // 关闭按钮
-                closePopupWindowAction();
-            }
-            else {
-                Toast.makeText(context, "index：" + index, Toast.LENGTH_SHORT).show();
-            }
-        }
+        this.button.setOnClickListener(view -> {
+            Intent intent = new Intent(context, UnusedActivity.class);
+            context.startActivity(intent);
+        });
     }
 
     /**
@@ -187,11 +161,6 @@ public class PopMenuView {
         }
     }
 
-    /**
-     * PopupWindow是否显示了
-     *
-     * @return
-     */
     public boolean isShowing() {
         return this.mPopupWindow != null && this.mPopupWindow.isShowing();
     }

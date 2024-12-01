@@ -206,34 +206,58 @@
                     android:textSize="17dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="20dp">
                     <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/user_img1"
                         android:layout_width="34dp"
                         android:layout_height="34dp"
+                        android:layout_marginTop="5dp"
                         android:src="@drawable/item1"
                         android:scaleType="fitXY"
-                        app:riv_corner_radius="17dp">
+                        app:riv_corner_radius="17dp"
+                        tools:ignore="DuplicateIds">
 
                     </com.makeramen.roundedimageview.RoundedImageView>
+
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="34dp"
+                        android:id="@+id/comment_layout"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/user_img1"
                         android:background="@drawable/item_search_bg"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="15dp">
+                        android:orientation="horizontal">
+
                         <EditText
                             android:id="@+id/comment"
                             android:layout_width="match_parent"
-                            android:layout_marginStart="12dp"
-                            android:layout_height="34dp"
-                            android:background="@null"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/background_gray"
+                            android:inputType="textMultiLine"
+                            android:maxLines="3"
+                            android:scrollbars="vertical" />
                     </LinearLayout>
-                </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/send"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_toEndOf="@+id/comment_layout"
+                        android:contentDescription="发送"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/fasong" />
+                </RelativeLayout>
+
                 <LinearLayout
                     android:id="@+id/user_comments"
                     android:layout_width="match_parent"

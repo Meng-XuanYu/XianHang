@@ -2,7 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"
+        tools:ignore="SelectedPhotoAccess" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
+
+
+
 
     <application
         android:allowBackup="true"
@@ -62,6 +75,9 @@
             android:exported="true" />
         <activity
             android:name="Profile.CollectActivity"
+            android:exported="true" />
+        <activity
+            android:name="Main.WaitActivity"
             android:exported="true" />
         <activity
             android:name="Main.sortActivity"

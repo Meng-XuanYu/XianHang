@@ -96,12 +96,15 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         this.mViewHolderList = new ArrayList<>();
     }
 
-    /**
-     * 添加tab
-     *
-     * @param frameLayoutClass
-     * @param tabParam
-     */
+    public void setRedDotVisibility(String tag, boolean visible) {
+        for (ViewHolder holder : this.mViewHolderList) {
+            if (TextUtils.equals(tag, holder.tag)) {
+                holder.redDot.setVisibility(visible ? View.VISIBLE : View.GONE);
+                break;
+            }
+        }
+    }
+
     public void addTab(Class frameLayoutClass, TabParam tabParam) {
         int defaultLayout = R.layout.view_navigate_tabbar;
 
@@ -113,13 +116,13 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         holder.fragmentClass = frameLayoutClass;
         holder.tag = tabParam.title;
         holder.pageParam = tabParam;
-        holder.tabIcon = (ImageView) view.findViewById(R.id.tab_icon);
-        holder.tabTitle = ((TextView) view.findViewById(R.id.tab_title));
+        holder.tabIcon = view.findViewById(R.id.tab_icon);
+        holder.tabTitle = view.findViewById(R.id.tab_title);
+        holder.redDot = view.findViewById(R.id.red_dot); // 初始化红点视图
 
         if (TextUtils.isEmpty(tabParam.title)) {
             holder.tabTitle.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             holder.tabTitle.setText(tabParam.title);
         }
 
@@ -136,8 +139,7 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
 
         if (tabParam.iconResId > 0) {
             holder.tabIcon.setImageResource(tabParam.iconResId);
-        }
-        else {
+        } else {
             holder.tabIcon.setVisibility(View.INVISIBLE);
         }
 
@@ -369,12 +371,13 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
      * ViewHolder
      */
     private static class ViewHolder {
-        public String    tag;
-        public TabParam  pageParam;
+        public String tag;
+        public TabParam pageParam;
         public ImageView tabIcon;
-        public TextView  tabTitle;
-        public Class     fragmentClass;
-        public int       tabIndex;
+        public TextView tabTitle;
+        public View redDot; // 添加红点视图
+        public Class fragmentClass;
+        public int tabIndex;
     }
 
     /**

@@ -3,12 +3,13 @@ package model;
 public class GetProfileResponse {
     private String status;
     private String message;
+    private String userImage;
     private String name;
-    private String gender;
     private String text;
     private String school;
     private String identity;
     private String phone;
+    private String studentId;
 
     // Getters
     public String getStatus() {
@@ -23,8 +24,8 @@ public class GetProfileResponse {
         return name;
     }
 
-    public String getGender() {
-        return gender;
+    public String getStudentId() {
+        return studentId;
     }
 
     public String getText() {
@@ -42,13 +43,16 @@ public class GetProfileResponse {
     public String getPhone() {
         return phone;
     }
+    public String getAvatar(){
+        return userImage;
+    }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public void setText(String text) {
@@ -66,4 +70,9 @@ public class GetProfileResponse {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public void setAvatar(String image) {
+        this.userImage = image;
+    }
+
 }

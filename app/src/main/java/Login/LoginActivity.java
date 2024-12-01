@@ -1,5 +1,6 @@
 package Login;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -35,6 +36,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.login.R;
 
 import Main.MainActivity;
+import Profile.CreateUserInfoActivity;
 import Register.ChangeActivity;
 import Register.RegisterActivity;
 import model.GetAttractivenessResponse;
@@ -54,6 +56,9 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -62,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isUserProfileFetched = false;
     private boolean isMoneyFetched = false;
     private boolean isAttractivenessFetched = false;
+    private static final int REQUEST_CODE_PERMISSIONS = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,9 +235,9 @@ public class LoginActivity extends AppCompatActivity {
         ApiService apiService = RetrofitClient.getApiService();
 
         // 发送 POST 请求
-        apiService.login(loginRequest).enqueue(new retrofit2.Callback<LoginResponse>() {
+        apiService.login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, retrofit2.Response<LoginResponse> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
                     if ("success".equals(loginResponse.getStatus())) {
@@ -433,10 +439,34 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkAllDataFetched() {
         if (isUserProfileFetched && isMoneyFetched && isAttractivenessFetched) {
-            // 跳转到主页
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+
+            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            String profileJson = sharedPreferences.getString("userProfile", null);
+
+            if (profileJson != null) {
+                Gson gson = new Gson();
+                GetProfileResponse profile = gson.fromJson(profileJson, GetProfileResponse.class);
+
+                // 跳转到创建资料页面
+                if (profile.getName() == null || profile.getText()== null || profile.getSchool()== null
+                        || profile.getIdentity()== null || profile.getPhone()== null || profile.getStudentId() == null
+                        || profile.getAvatar()== null || profile.getAvatar().isEmpty() || profile.getName().isEmpty() ||
+                        profile.getText().isEmpty() || profile.getSchool().isEmpty() || profile.getIdentity().isEmpty() ||
+                        profile.getPhone().isEmpty() || profile.getStudentId().isEmpty()) {
+                    Intent intent = new Intent(LoginActivity.this, CreateUserInfoActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    // 跳转到主页
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+            } else {
+                Toast.makeText(this, "用户信息加载失败", Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 

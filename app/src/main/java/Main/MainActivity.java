@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         this.mNavigateTabBar.addTab(fragment.MessageFragment.class, new NavigateTabBar.TabParam(R.drawable.message, R.drawable.message_filled, TAG_PAGE_MESSAGE));
         this.mNavigateTabBar.addTab(fragment.PersonFragment.class, new NavigateTabBar.TabParam(R.drawable.profile, R.drawable.profile_filled, TAG_PAGE_PERSON));
 
+        mNavigateTabBar.setRedDotVisibility(TAG_PAGE_MESSAGE, true);
         // 点击发布按钮
         this.mTabMoreIv.setOnClickListener(v -> PopMenuView.getInstance().show(MainActivity.this, mTabMoreIv));
 
