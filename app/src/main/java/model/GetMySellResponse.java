@@ -4,10 +4,15 @@ import java.util.List;
 
 public class GetMySellResponse {
     private String status;
+    private String message;
     private List<Trade> trades;
 
     public String getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public List<Trade> getTrades() {

@@ -74,7 +74,6 @@ public class EvaluateActivity extends AppCompatActivity {
         });
         
         getMyEvaluate();
-        generateLayout(this, trades);
     }
 
     private void getMyEvaluate() {
@@ -91,10 +90,11 @@ public class EvaluateActivity extends AppCompatActivity {
                     GetNeedCommentResponse getNeedCommentResponse = response.body();
                     if ("success".equals(getNeedCommentResponse.getStatus())) {
                         trades = getNeedCommentResponse.getTrades();
+                        generateLayout(EvaluateActivity.this, trades);
                     } else {
                         // 登录失败
-                        Toast.makeText(EvaluateActivity.this, "getNeedCommentResponse.getMessage()", Toast.LENGTH_SHORT).show();
-                        Log.e("MyEvaluate", "Error: " + "getNeedCommentResponse.getMessage()");
+                        Toast.makeText(EvaluateActivity.this, getNeedCommentResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("MyEvaluate", "Error: " + getNeedCommentResponse.getMessage());
                     }
                 } else {
                     try {
@@ -118,45 +118,6 @@ public class EvaluateActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void getUserNameAndAvatar(String userId) {
-        ApiService apiService = RetrofitClient.getApiService();
-        // 发送 GET 请求获取用户信息
-        apiService.getProfile(userId).enqueue(new Callback<GetProfileResponse>() {
-            @Override
-            public void onResponse(Call<GetProfileResponse> call, Response<GetProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    GetProfileResponse profileResponse = response.body();
-                    if ("success".equals(profileResponse.getStatus())) {
-                        // 将用户数据存储到 SharedPreferences
-                        name = profileResponse.getName();
-                        avatar = profileResponse.getAvatar();
-                    } else {
-                        Toast.makeText(EvaluateActivity.this, "获取用户信息失败: " + profileResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    try {
-                        // 从 errorBody 获取错误信息
-                        String errorJson = response.errorBody().string();
-                        JSONObject errorObject = new JSONObject(errorJson);
-                        String errorMessage = errorObject.optString("message", "未知错误");
-                        Toast.makeText(EvaluateActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                        Log.e("getProfile", "Error: " + errorMessage);
-                    } catch (Exception e) {
-                        Toast.makeText(EvaluateActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
-                        Log.e("getProfile", "Error parsing error body: ", e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetProfileResponse> call, Throwable t) {
-                Toast.makeText(EvaluateActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("getProfile", "Request Failed: " + t.getMessage());
-            }
-        });
-    }
-
 
     private void generateLayout(Context context, List<GetNeedCommentResponse.Trade> items) {
         if (items == null) {
@@ -230,9 +191,8 @@ public class EvaluateActivity extends AppCompatActivity {
             innerRoundedImageView.setLayoutParams(innerImageParams1);
             innerRoundedImageView.setBackgroundResource(R.drawable.img);
             innerRoundedImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            getUserNameAndAvatar(item.getSellerId());
             Glide.with(context)
-                    .load(avatar)
+                    .load(item.getSellerImage())
                     .placeholder(R.drawable.img)  // 占位图
                     .error(R.drawable.img).into(innerRoundedImageView);
             innerRoundedImageView.setCornerRadius(dpToPx(context, 12.5f));
@@ -247,7 +207,7 @@ public class EvaluateActivity extends AppCompatActivity {
             textviewParams3.setMargins(dpToPx(context, 7), dpToPx(context, 7), 0, dpToPx(context, 10));
             textView3.setLayoutParams(textviewParams3);
             textView3.setPadding(dpToPx(context, 4), 0, 0, 0);
-            textView3.setText(name);
+            textView3.setText(item.getSellerName());
             textView3.setTextSize(14);
             textView3.setMaxLines(1);
             textView3.setEllipsize(TextUtils.TruncateAt.END);
@@ -269,8 +229,10 @@ public class EvaluateActivity extends AppCompatActivity {
             textView4.setTextColor(Color.parseColor("#f27000"));
             innerLayout.addView(textView4);
             itemLayout.addView(innerLayout);
+            final int temp = Integer.parseInt(item.getCommodityId());
             itemLayout.setOnClickListener(view -> {
                 Intent intent = new Intent(EvaluateActivity.this, ItemDetailActivity.class);
+                intent.putExtra("commodityId",temp);
                 startActivity(intent);
             });
 

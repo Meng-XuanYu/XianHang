@@ -2,10 +2,15 @@ package model;
 
 public class GetTradeCommentResponse {
     private String status;
+    private String message;
     private CommentData comment;
 
     public String getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public CommentData getComment() {

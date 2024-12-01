@@ -67,7 +67,6 @@ public class ReleaseActivity extends AppCompatActivity {
         });
 
         getMyRelease();
-        generateLayout(this, commodities);
     }
 
     private void getMyRelease() {
@@ -84,8 +83,8 @@ public class ReleaseActivity extends AppCompatActivity {
                     GetMyPublishResponse getMyPublishResponse = response.body();
                     if ("success".equals(getMyPublishResponse.getStatus())) {
                         commodities = getMyPublishResponse.getCommodities();
+                        generateLayout(ReleaseActivity.this, commodities);
                     } else {
-                        // 登录失败
                         Toast.makeText(ReleaseActivity.this, "getMyPublishResponse.getMessage()", Toast.LENGTH_SHORT).show();
                         Log.e("MyRelease", "Error: " + "getMyPublishResponse.getMessage()");
                     }
@@ -170,8 +169,10 @@ public class ReleaseActivity extends AppCompatActivity {
             itemLayout.addView(textView2);
 
 
+            final int temp = Integer.parseInt(item.getCommodityId());
             itemLayout.setOnClickListener(view -> {
                 Intent intent = new Intent(ReleaseActivity.this, ItemDetailActivity.class);
+                intent.putExtra("commodityId",temp);
                 startActivity(intent);
             });
 

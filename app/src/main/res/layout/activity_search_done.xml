@@ -59,6 +59,7 @@
                         android:layout_height="28dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="7dp"
+                        android:gravity="center_vertical"
                         android:textColor="@color/gray"
                         android:text="请输入您想要的商品"
                         android:textSize="15sp" />

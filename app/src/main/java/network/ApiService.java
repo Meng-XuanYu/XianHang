@@ -87,7 +87,7 @@ public interface ApiService {
     @POST("confirmReceive/")
     Call<ConfirmReceiveResponse> confirmReceive(@Body ConfirmReceiveRequest request);
     @POST("ai_search/")
-    Call<AISearchRequest> aiSearch(@Body AISearchRequest requestBody);
+    Call<AISearchResponse> aiSearch(@Body AISearchRequest requestBody);
     @POST("ai_recommend/")
     Call<AIRecommendResponse> aiRecommend(@Body AIRecommendRequest requestBody);
     @POST("ai_extend/")
@@ -118,4 +118,7 @@ public interface ApiService {
 
     @GET("getCommodityListByClass/")
     Call<GetCommodityListByClassResponse> getCommodityListByClass(@Query("commodityClass") String commodityClass);
+
+    @POST("setRead/")
+    Call<SetReadResponse> setRead(@Body SetReadRequest request);
 }

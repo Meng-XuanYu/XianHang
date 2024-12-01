@@ -177,14 +177,12 @@ public class CreateUserInfoActivity extends AppCompatActivity {
             }
             if (profile.getPhone() != null) {
                 tel.setText(profile.getPhone());
-
             }
             if (profile.getAvatar() != null) {
                 Glide.with(this)
                         .load(profile.getAvatar())
                         .placeholder(R.drawable.img)  // 占位图
                         .error(R.drawable.img).into(avatar);
-
             }
         } else {
             Toast.makeText(this, "用户信息加载失败", Toast.LENGTH_SHORT).show();
@@ -227,14 +225,11 @@ public class CreateUserInfoActivity extends AppCompatActivity {
                 bottomSheetDialog.dismiss();
             });
         }
-
         // 显示 BottomSheetDialog
         bottomSheetDialog.show();
-
     }
 
     private void sendUpdateSchoolRequest(String school) {
-
         // 从 SharedPreferences 获取 userId
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);

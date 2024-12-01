@@ -27,6 +27,21 @@ public class GetCollectionsResponse {
         private Double commodityValue;
         private String commodityClass;
         private String commodityImage;
+        private String sellerName;
+        private String sellerImage;
+        private String sellerAttractiveness;
+
+        public String getSellerAttractiveness() {
+            return sellerAttractiveness;
+        }
+
+        public String getSellerImage() {
+            return sellerImage;
+        }
+
+        public String getSellerName() {
+            return sellerName;
+        }
 
         public String getSellerId() {
             return sellerId;

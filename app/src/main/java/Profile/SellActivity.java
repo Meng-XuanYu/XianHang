@@ -67,17 +67,12 @@ public class SellActivity extends AppCompatActivity {
         });
 
         getMyEvaluate();
-        generateLayout(this, trades);
+
     }
 
     private void getMyEvaluate() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
-
-//        if (userId == null) {
-//            Toast.makeText(this, "未找到用户 ID，请重新登录", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
 
         ApiService apiService = RetrofitClient.getApiService();
 
@@ -89,6 +84,7 @@ public class SellActivity extends AppCompatActivity {
                     GetMySellResponse getMySellResponse = response.body();
                     if ("success".equals(getMySellResponse.getStatus())) {
                         trades = getMySellResponse.getTrades();
+                        generateLayout(SellActivity.this, trades);
                     } else {
                         // 登录失败
                         Toast.makeText(SellActivity.this, "getMySellResponse.getMessage()", Toast.LENGTH_SHORT).show();
@@ -174,8 +170,10 @@ public class SellActivity extends AppCompatActivity {
             textView2.setTextColor(Color.parseColor("#fd424b"));
             itemLayout.addView(textView2);
 
+            final int temp = Integer.parseInt(item.getCommodityId());
             itemLayout.setOnClickListener(view -> {
                 Intent intent = new Intent(SellActivity.this, ItemDetailActivity.class);
+                intent.putExtra("commodityId",temp);
                 startActivity(intent);
             });
 

@@ -1,8 +1,9 @@
 package Main;
 
-import android.content.ContentResolver;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,9 +30,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.login.R;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+
+import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+
+import model.GetProfileResponse;
+import model.PublishCommodityResponse;
+import network.ApiService;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import RetrofitClient.RetrofitClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UnusedActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SELECT_IMAGE = 1;
@@ -58,8 +74,14 @@ public class UnusedActivity extends AppCompatActivity {
 
     private LinearLayout sort_arrow;
     private TextView sort;
+    private EditText editText_name;
+    private EditText editText;
+    private TextView pos;
+
+    private ArrayList<Uri> imageList = new ArrayList<>();
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +105,19 @@ public class UnusedActivity extends AppCompatActivity {
         price_arrow.setOnClickListener(v->showKey());
         sort_arrow = findViewById(R.id.sort_arrow);
         sort = findViewById(R.id.sort);
+        editText_name = findViewById(R.id.editText_name);
+        pos = findViewById(R.id.pos);
+        editText = findViewById(R.id.editText);
+        imageList = new ArrayList<>();
+
+        // 校区
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String profileJson = sharedPreferences.getString("userProfile", null);
+        if (profileJson != null) {
+            Gson gson = new Gson();
+            GetProfileResponse profile = gson.fromJson(profileJson, GetProfileResponse.class);
+            pos.setText("校区：" + profile.getSchool());
+        }
 
         // 退出
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
@@ -90,8 +125,87 @@ public class UnusedActivity extends AppCompatActivity {
         imageview = findViewById(R.id.imageView);
         imageview.setOnClickListener(v->openGallery());
 
-        // 选择地点
+        // 选择分类
         sort_arrow.setOnClickListener(v -> showBottomSheetDialog());
+
+        // 发布
+        Button button = findViewById(R.id.save);
+        button.setOnClickListener(v -> {
+            // 获取输入的商品信息，图片就是arraylist
+            String nameText = editText_name.getText().toString();
+            String descriptionText = editText.getText().toString();
+            String priceText = price.getText().toString();
+            String sortText = sort.getText().toString();
+            // 上传商品信息
+            publishCommodity(nameText, descriptionText, priceText, sortText, imageList);
+        });
+    }
+
+    private void publishCommodity(String name, String description, String price, String sort, ArrayList<Uri> imageList) {
+        //userid部分
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+        RequestBody userIdBody = RequestBody.create(userId, okhttp3.MultipartBody.FORM);
+
+        // 商品文本信息
+        RequestBody nameBody = RequestBody.create(name, okhttp3.MultipartBody.FORM);
+        RequestBody descriptionBody = RequestBody.create(description, okhttp3.MultipartBody.FORM);
+        RequestBody priceBody = RequestBody.create(price, okhttp3.MultipartBody.FORM);
+        RequestBody sortBody = RequestBody.create(sort, okhttp3.MultipartBody.FORM);
+
+        // 商品图片信息
+        // 第一张图片
+        File file = new File(getRealPathFromURI(imageList.get(0)));
+        RequestBody image1File = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part image1Body = MultipartBody.Part.createFormData("image", file.getName(), image1File);
+        // 后面的图片
+        ArrayList <MultipartBody.Part> imageBodies = new ArrayList<>();
+        for (int i = 1; i < imageList.size(); i++) {
+            File file1 = new File(getRealPathFromURI(imageList.get(i)));
+            RequestBody imageFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), file1);
+            MultipartBody.Part imageBody1 = MultipartBody.Part.createFormData("image", file1.getName(), imageFile1);
+            imageBodies.add(imageBody1);
+        }
+
+        // 发起请求
+        ApiService apiService = RetrofitClient.getApiService();
+
+        // 发起请求
+        apiService.publishCommodity(userIdBody, nameBody, descriptionBody, priceBody, null, sortBody, image1Body, imageBodies)
+                .enqueue(new Callback<PublishCommodityResponse>() {
+                    @Override
+                    public void onResponse(Call<PublishCommodityResponse> call, Response<PublishCommodityResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            PublishCommodityResponse result = response.body();
+                            if ("success".equals(result.getStatus())) {
+                                Toast.makeText(UnusedActivity.this, "发布成功！商品ID: " + result.getCommodityId(), Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Toast.makeText(UnusedActivity.this, "发布失败: " + result.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(UnusedActivity.this, "发布失败，服务器返回错误", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PublishCommodityResponse> call, Throwable t) {
+                        Toast.makeText(UnusedActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        }
+        return null;
     }
 
     private void openGallery() {
@@ -100,6 +214,7 @@ public class UnusedActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void generateImg(Uri uri){
         FrameLayout frameLayout = new FrameLayout(this);
         FlexboxLayout.LayoutParams params1 = new FlexboxLayout.LayoutParams(
@@ -129,7 +244,10 @@ public class UnusedActivity extends AppCompatActivity {
         roundedImageView1.setPadding(dpToPx(this,4),dpToPx(this,4),dpToPx(this,4),dpToPx(this,4));
         roundedImageView1.setBackground(getResources().getDrawable(R.drawable.close));
         roundedImageView1.setScaleType(ImageView.ScaleType.FIT_XY);
-        roundedImageView1.setOnClickListener(view -> ((FlexboxLayout)imageview.getParent()).removeView(((FrameLayout)view.getParent())));
+        roundedImageView1.setOnClickListener(view -> {
+            ((FlexboxLayout)imageview.getParent()).removeView(((FrameLayout)view.getParent()));
+            imageList.remove(uri);
+        });
         frameLayout.addView(roundedImageView1);
         ((FlexboxLayout)imageview.getParent()).addView(frameLayout,0);
     }
@@ -150,40 +268,8 @@ public class UnusedActivity extends AppCompatActivity {
             if (data != null && data.getData() != null) {
                 Uri selectedImageUri = data.getData();
                 generateImg(selectedImageUri); // 加载图片到 ImageView
-                // 获取图片的详细信息
-                getImageDetails(selectedImageUri);
+                imageList.add(selectedImageUri);
             }
-        }
-    }
-
-    // 获取图片的详细信息
-    private void getImageDetails(Uri imageUri) {
-        String[] projection = {
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.SIZE,
-                MediaStore.Images.Media.DATE_ADDED
-        };
-
-        ContentResolver contentResolver = getContentResolver();
-        Cursor cursor = contentResolver.query(imageUri, projection, null, null, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
-            String imageName = cursor.getString(columnIndex);
-
-            columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.SIZE);
-            long imageSize = cursor.getLong(columnIndex);
-
-            columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
-            long imageDate = cursor.getLong(columnIndex);
-
-            // 显示图片信息
-            Toast.makeText(this, "Name: " + imageName + ", Size: " + imageSize + " bytes", Toast.LENGTH_LONG).show();
-        }
-
-        if (cursor != null) {
-            cursor.close();
         }
     }
 
@@ -195,24 +281,18 @@ public class UnusedActivity extends AppCompatActivity {
         if(!price1.toString().isEmpty()){
             price1.delete(1,1);
         }
-//        et_input.addTextChangedListener(new DecimalTextWatcher(et_input));
-
-//        et_input.setOnClickListener(v->et_input.requestFocus());
-        et_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    // 获取系统的 InputMethodManager 服务
-                    UnusedActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-                    try {
-                        Class<EditText> cls = EditText.class;
-                        Method setSoftInputShownOnFocus;
-                        setSoftInputShownOnFocus = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
-                        setSoftInputShownOnFocus.setAccessible(true);
-                        setSoftInputShownOnFocus.invoke(et_input, false);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+        et_input.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                // 获取系统的 InputMethodManager 服务
+                UnusedActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                try {
+                    Class<EditText> cls = EditText.class;
+                    Method setSoftInputShownOnFocus;
+                    setSoftInputShownOnFocus = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
+                    setSoftInputShownOnFocus.setAccessible(true);
+                    setSoftInputShownOnFocus.invoke(et_input, false);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -312,7 +392,7 @@ public class UnusedActivity extends AppCompatActivity {
             bottomSheetDialog.dismiss();
         });
         btn_delete.setOnClickListener(v->{
-            if(!et_input.hasFocus() || et_input.getText().toString().isEmpty())return;
+            if(!et_input.hasFocus())return;
             int cursorPosition = et_input.getSelectionStart()-1;
             if(et_input.getSelectionStart() == et_input.getText().toString().length()){
                 et_input.setText(et_input.getText().toString().substring(0,cursorPosition));

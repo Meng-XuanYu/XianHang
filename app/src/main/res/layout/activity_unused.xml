@@ -125,10 +125,10 @@
                 android:textStyle="bold" />
         </com.google.android.flexbox.FlexboxLayout>
         <TextView
-
+            android:id="@+id/pos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="校区：北京航空航天大学  学院路校区"
+            android:text="校区：学院路校区"
             android:background="@drawable/user_pos_bg"
             android:textSize="13dp"
 
@@ -173,7 +173,6 @@
                 android:drawableStart="@drawable/baseline_currency_yen_24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1111"
                 android:textSize="22sp"
                  />
             <ImageView

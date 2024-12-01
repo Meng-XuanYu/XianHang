@@ -2,10 +2,15 @@ package model;
 
 public class GetSingleTradeResponse {
     private String status;
+    private String message;
     private Trade trade;
 
     public String getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public Trade getTrade() {

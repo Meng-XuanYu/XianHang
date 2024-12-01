@@ -4,6 +4,7 @@ import java.util.List;
 
 public class AISearchResponse {
     private String status;
+    private String message;
     private List<Commodity> result;
 
     public String getStatus() {
@@ -14,6 +15,10 @@ public class AISearchResponse {
         return result;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public static class Commodity {
         private String sellerId;
         private String commodityId;
@@ -21,6 +26,21 @@ public class AISearchResponse {
         private String commodityDescription;
         private int commodityValue;
         private String commodityImage;
+        private String sellerName;
+        private String sellerImage;
+        private String sellerAttractiveness;
+
+        public String getSellerAttractiveness() {
+            return sellerAttractiveness;
+        }
+
+        public String getSellerImage() {
+            return sellerImage;
+        }
+
+        public String getSellerName() {
+            return sellerName;
+        }
 
         public String getSellerId() {
             return sellerId;

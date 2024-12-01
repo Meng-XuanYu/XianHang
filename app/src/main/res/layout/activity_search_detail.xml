@@ -66,6 +66,7 @@
 
         </LinearLayout>
         <ImageView
+            android:id="@+id/ai_search"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:scaleType="fitCenter"

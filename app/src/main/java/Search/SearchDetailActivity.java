@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,18 +29,28 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.JustifyContent;
 
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
 import Main.SearchDoneActivity;
+import RetrofitClient.RetrofitClient;
+import model.SearchCommodityResponse;
+import model.SearchCommodityResponse;
+import network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchDetailActivity extends AppCompatActivity {
     private ImageView imageView;
     private ImageView searchImage;
+    private ImageView aiSearchImage;
     private LinearLayout searchHistory;
     private LinearLayout searchGuess;
     private EditText editText;
-    private int id ;
+    private int id;
 
 
     @Override
@@ -52,6 +63,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         searchGuess = findViewById(R.id.search_guess);
         editText = findViewById(R.id.searchEditText2);
         searchImage = findViewById(R.id.search_img);
+        aiSearchImage = findViewById(R.id.ai_search);
 
         // 沉浸式体验
         getWindow().getDecorView().setSystemUiVisibility(
@@ -61,13 +73,18 @@ public class SearchDetailActivity extends AppCompatActivity {
         );
 
         // searchImage动作
-        searchImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SearchDetailActivity.this, SearchDoneActivity.class);
-                startActivity(intent);
-            }
+        searchImage.setOnClickListener(view -> {
+            Intent intent = new Intent(SearchDetailActivity.this, SearchDoneActivity.class);
+            intent.putExtra("text",editText.getText().toString());
+            startActivity(intent);
+            finish();
         });
+        aiSearchImage.setOnClickListener(view -> {
+            Intent intent = new Intent(SearchDetailActivity.this, SearchDoneActivity.class);
+            intent.putExtra("ai_text",editText.getText().toString());
+            startActivity(intent);
+            finish();
+        });;
 
         editText.requestFocus();
         imageView.setOnClickListener(view -> finish());
@@ -90,7 +107,7 @@ public class SearchDetailActivity extends AppCompatActivity {
             Layout.setJustifyContent(JustifyContent.FLEX_START);
             Drawable drawable = getResources().getDrawable(R.drawable.search_bg);
             Layout.setBackground(drawable);
-            Layout.setPadding(10,10,10,10);
+            Layout.setPadding(10, 10, 10, 10);
             Layout.setLayoutParams(params1);
             TextView textView = new TextView(this);
             textView.setText(str);
@@ -101,15 +118,10 @@ public class SearchDetailActivity extends AppCompatActivity {
             Layout.addView(textView);
             newLinearLayout.addView(Layout);
 
-            Layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("111", view+"");
-                    editText.setText(((TextView)((FlexboxLayout)view).getChildAt(0)).getText());
-                    editText.setSelection(editText.getText().length());
-
-
-                }
+            Layout.setOnClickListener(view -> {
+                Log.d("111", view + "");
+                editText.setText(((TextView) ((FlexboxLayout) view).getChildAt(0)).getText());
+                editText.setSelection(editText.getText().length());
             });
         }
         View rootView = findViewById(android.R.id.content);
@@ -147,6 +159,8 @@ public class SearchDetailActivity extends AppCompatActivity {
         searchHistory.addView(newLinearLayout);
 
     }
+
+
     private int dpToPx(Context context, int dp) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,

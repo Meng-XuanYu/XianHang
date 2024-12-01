@@ -4,10 +4,15 @@ import java.util.List;
 
 public class GetMyPublishResponse {
     private String status;
+    private String message;
     private List<Commodity> commodities;
 
     public String getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public List<Commodity> getCommodities() {

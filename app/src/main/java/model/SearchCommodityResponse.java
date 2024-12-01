@@ -4,6 +4,7 @@ import java.util.List;
 
 public class SearchCommodityResponse {
     private String status;
+    private String message;
     private List<Commodity> commodities;
 
     public String getStatus() {
@@ -13,6 +14,9 @@ public class SearchCommodityResponse {
     public List<Commodity> getCommodities() {
         return commodities;
     }
+    public String getMessage(){
+        return message;
+    }
 
     public static class Commodity {
         private String sellerId;
@@ -21,6 +25,21 @@ public class SearchCommodityResponse {
         private String commodityDescription;
         private Double commodityValue;
         private String commodityImage;
+        private String sellerName;
+        private String sellerImage;
+        private String sellerAttractiveness;
+
+        public String getSellerAttractiveness() {
+            return sellerAttractiveness;
+        }
+
+        public String getSellerImage() {
+            return sellerImage;
+        }
+
+        public String getSellerName() {
+            return sellerName;
+        }
 
         public String getSellerId() {
             return sellerId;

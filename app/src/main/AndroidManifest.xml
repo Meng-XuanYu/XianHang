@@ -80,7 +80,7 @@
             android:name="Main.WaitActivity"
             android:exported="true" />
         <activity
-            android:name="Main.sortActivity"
+            android:name="Main.SortActivity"
             android:exported="true" />
         <activity android:name="Profile.SellActivity"
             android:exported="true" />

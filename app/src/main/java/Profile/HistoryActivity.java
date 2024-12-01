@@ -74,18 +74,11 @@ public class HistoryActivity extends AppCompatActivity {
             finish();
         });
         getHistory();
-
-        generateLayout(this, commodities);
     }
 
     private void getHistory() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
-
-//        if (userId == null) {
-//            Toast.makeText(this, "未找到用户 ID，请重新登录", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
 
         ApiService apiService = RetrofitClient.getApiService();
 
@@ -97,6 +90,7 @@ public class HistoryActivity extends AppCompatActivity {
                     GetHistoryResponse getHistoryResponse = response.body();
                     if ("success".equals(getHistoryResponse.getStatus())) {
                         commodities = getHistoryResponse.getHistory();
+                        generateLayout(HistoryActivity.this, commodities);
                     } else {
                         // 登录失败
                         Toast.makeText(HistoryActivity.this, getHistoryResponse.getMessage(), Toast.LENGTH_SHORT).show();
@@ -129,10 +123,15 @@ public class HistoryActivity extends AppCompatActivity {
         if(commodities == null){
             return;
         }
-        for (GetHistoryResponse.Commodity commodity : commodities) {
+        for (GetHistoryResponse.Commodity item : commodities) {
             LinearLayout itemLayout = new LinearLayout(context);
+            final int temp = Integer.parseInt(item.getCommodityId());
+            itemLayout.setOnClickListener(view -> {
+                Intent intent = new Intent(HistoryActivity.this, ItemDetailActivity.class);
+                intent.putExtra("commodityId",temp);
+                startActivity(intent);
+            });
             itemLayout.setOrientation(LinearLayout.VERTICAL);
-            itemLayout.setBackgroundResource(R.color.white);
             LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -150,13 +149,10 @@ public class HistoryActivity extends AppCompatActivity {
             roundedImageView.setBackgroundResource(R.drawable.img);
             roundedImageView.setScaleType(ImageView.ScaleType.FIT_START);
             Glide.with(context)
-                    .load(commodity.getCommodityImage())
+                    .load(item.getCommodityImage())
                     .placeholder(R.drawable.img)  // 占位图
                     .error(R.drawable.img).into(roundedImageView);
-
-//            roundedImageView.setImageResource(img.get(items.indexOf(item) % 2));
-
-            roundedImageView.setCornerRadius(dpToPx(context, 10), dpToPx(context, 10), 0, 0);
+            roundedImageView.setCornerRadius(dpToPx(context,10),dpToPx(context,10),0,0);
             itemLayout.addView(roundedImageView);
 
             TextView textView1 = new TextView(context);
@@ -164,9 +160,9 @@ public class HistoryActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            textviewParams1.setMargins(dpToPx(context, 10), dpToPx(context, 10), 0, dpToPx(context, 5));
+            textviewParams1.setMargins(dpToPx(context,10),dpToPx(context,10),0,dpToPx(context,5));
             textView1.setLayoutParams(textviewParams1);
-            textView1.setText(commodity.getCommodityDescription());
+            textView1.setText(item.getCommodityDescription());
             textView1.setSingleLine(true);
             textView1.setTextSize(15);
             textView1.setTextColor(Color.BLACK);
@@ -177,9 +173,9 @@ public class HistoryActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            textviewParams2.setMargins(dpToPx(context, 10), 0, 0, dpToPx(context, 5));
+            textviewParams2.setMargins(dpToPx(context,10),0,0,dpToPx(context,5));
             textView2.setLayoutParams(textviewParams2);
-            textView2.setText(String.valueOf(commodity.getCommodityValue()));
+            textView2.setText(String.valueOf(item.getCommodityValue()));
             textView2.setTextSize(18);
             textView2.setTypeface(null, Typeface.BOLD);
             textView2.setTextColor(Color.parseColor("#fd424b"));
@@ -193,32 +189,30 @@ public class HistoryActivity extends AppCompatActivity {
             innerLayout.setLayoutParams(innerParams);
             RoundedImageView innerRoundedImageView = new RoundedImageView(context);
             LinearLayout.LayoutParams innerImageParams1 = new LinearLayout.LayoutParams(
-                    dpToPx(context, 25),
-                    dpToPx(context, 25)
+                    dpToPx(context,25),
+                    dpToPx(context,25)
             );
-            innerImageParams1.setMargins(dpToPx(context, 10), dpToPx(context, 5), 0, dpToPx(context, 10));
+            innerImageParams1.setMargins(dpToPx(context,10),dpToPx(context,5),0,dpToPx(context,10));
             innerRoundedImageView.setLayoutParams(innerImageParams1);
             innerRoundedImageView.setBackgroundResource(R.drawable.img);
             innerRoundedImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            getUserNameAndAvatar(commodity.getSellerId());
             Glide.with(context)
-                    .load(avatar)
+                    .load(item.getSellerImage())
                     .placeholder(R.drawable.img)  // 占位图
                     .error(R.drawable.img).into(innerRoundedImageView);
-            innerRoundedImageView.setCornerRadius(dpToPx(context, 12.5f));
+            innerRoundedImageView.setCornerRadius(dpToPx(context,12.5f));
             innerLayout.addView(innerRoundedImageView);
 
             TextView textView3 = new TextView(context);
             LinearLayout.LayoutParams textviewParams3 = new LinearLayout.LayoutParams(
-                    dpToPx(context, 70),
+                    dpToPx(context,70),
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
 
-            textviewParams3.setMargins(dpToPx(context, 7), dpToPx(context, 7), 0, dpToPx(context, 10));
+            textviewParams3.setMargins(dpToPx(context,7),dpToPx(context,7),0,dpToPx(context,10));
             textView3.setLayoutParams(textviewParams3);
-            textView3.setPadding(dpToPx(context, 4), 0, 0, 0);
-            getUserNameAndAvatar(commodity.getSellerId());
-            textView3.setText(name);
+            textView3.setPadding(dpToPx(context,4),0,0,0);
+            textView3.setText(item.getSellerName());
             textView3.setTextSize(14);
             textView3.setMaxLines(1);
             textView3.setEllipsize(TextUtils.TruncateAt.END);
@@ -230,27 +224,30 @@ public class HistoryActivity extends AppCompatActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            textviewParams4.setMargins(dpToPx(context, 5), dpToPx(context, 6), 0, dpToPx(context, 10));
+            textviewParams4.setMargins(dpToPx(context,5),dpToPx(context,6),0,dpToPx(context,10));
             textView4.setLayoutParams(textviewParams4);
-            textView4.setPadding(dpToPx(context, 2), dpToPx(context, 2), dpToPx(context, 2), dpToPx(context, 2));
-            getAttractiveness(commodity.getSellerId());
+            textView4.setPadding(dpToPx(context,2),dpToPx(context,2),dpToPx(context,2),dpToPx(context,2));
+            int attractiveness = Integer.parseInt(item.getSellerAttractiveness());
+            if (attractiveness >= 500 && attractiveness < 550) {
+                credit="卖家信用一般";
+            } else if (attractiveness >= 550 && attractiveness < 750) {
+                credit="卖家信用良好";
+            } else if (attractiveness >= 750 && attractiveness < 1000) {
+                credit="卖家信用优秀";
+            } else if (attractiveness >= 1000) {
+                credit="卖家信用极好";
+            }
             textView4.setText(credit);
             textView4.setTextSize(10);
             textView4.setBackgroundResource(R.drawable.sell_score);
             textView4.setTextColor(Color.parseColor("#f27000"));
             innerLayout.addView(textView4);
             itemLayout.addView(innerLayout);
-            itemLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(HistoryActivity.this, ItemDetailActivity.class);
-                    startActivity(intent);
-                }
-            });
 
-            if (commodities.indexOf(commodity) % 2 == 0) {
+
+            if(items.indexOf(item) %2 == 0){
                 item_show1.addView(itemLayout);
-            } else {
+            } else   {
                 item_show2.addView(itemLayout);
             }
 
@@ -261,89 +258,5 @@ public class HistoryActivity extends AppCompatActivity {
     // dp 转 px 工具函数
     private int dpToPx(Context context, float dp) {
         return (int) (dp * context.getResources().getDisplayMetrics().density);
-    }
-
-    public void getUserNameAndAvatar(String userId) {
-        ApiService apiService = RetrofitClient.getApiService();
-        // 发送 GET 请求获取用户信息
-        apiService.getProfile(userId).enqueue(new Callback<GetProfileResponse>() {
-            @Override
-            public void onResponse(Call<GetProfileResponse> call, Response<GetProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    GetProfileResponse profileResponse = response.body();
-                    if ("success".equals(profileResponse.getStatus())) {
-                        // 将用户数据存储到 SharedPreferences
-                        name = profileResponse.getName();
-                        avatar = profileResponse.getAvatar();
-                    } else {
-                        Toast.makeText(HistoryActivity.this, "获取用户信息失败: " + profileResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    try {
-                        // 从 errorBody 获取错误信息
-                        String errorJson = response.errorBody().string();
-                        JSONObject errorObject = new JSONObject(errorJson);
-                        String errorMessage = errorObject.optString("message", "未知错误");
-                        Toast.makeText(HistoryActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                        Log.e("getProfile", "Error: " + errorMessage);
-                    } catch (Exception e) {
-                        Toast.makeText(HistoryActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
-                        Log.e("getProfile", "Error parsing error body: ", e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetProfileResponse> call, Throwable t) {
-                Toast.makeText(HistoryActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("getProfile", "Request Failed: " + t.getMessage());
-            }
-        });
-    }
-
-    public void getAttractiveness(String userId) {
-        ApiService apiService = RetrofitClient.getApiService();
-        // 发送 GET 请求获取用户信息
-        apiService.getAttractiveness(userId).enqueue(new Callback<GetAttractivenessResponse>() {
-            @Override
-            public void onResponse(Call<GetAttractivenessResponse> call, Response<GetAttractivenessResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    GetAttractivenessResponse getAttractivenessResponse = response.body();
-                    if ("success".equals(getAttractivenessResponse.getStatus())) {
-                        // 将用户数据存储到 SharedPreferences
-                        Integer attractiveness = getAttractivenessResponse.getAttractiveness();
-                        if (attractiveness >= 500 && attractiveness < 550) {
-                            credit="卖家信用一般";
-                        } else if (attractiveness >= 550 && attractiveness < 750) {
-                            credit="卖家信用良好";
-                        } else if (attractiveness >= 750 && attractiveness < 1000) {
-                            credit="卖家信用优秀";
-                        } else if (attractiveness >= 1000) {
-                            credit="卖家信用极好";
-                        }
-                    } else {
-                        Toast.makeText(HistoryActivity.this, "获取用户信息失败: " + getAttractivenessResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    try {
-                        // 从 errorBody 获取错误信息
-                        String errorJson = response.errorBody().string();
-                        JSONObject errorObject = new JSONObject(errorJson);
-                        String errorMessage = errorObject.optString("message", "未知错误");
-                        Toast.makeText(HistoryActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                        Log.e("getAttractiveness", "Error: " + errorMessage);
-                    } catch (Exception e) {
-                        Toast.makeText(HistoryActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
-                        Log.e("getAttractiveness", "Error parsing error body: ", e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetAttractivenessResponse> call, Throwable t) {
-                Toast.makeText(HistoryActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("getAttractiveness", "Request Failed: " + t.getMessage());
-            }
-        });
     }
 }

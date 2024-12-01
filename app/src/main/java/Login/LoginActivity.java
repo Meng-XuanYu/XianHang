@@ -56,9 +56,6 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
-import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -67,24 +64,22 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isUserProfileFetched = false;
     private boolean isMoneyFetched = false;
     private boolean isAttractivenessFetched = false;
-    private static final int REQUEST_CODE_PERMISSIONS = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_login);
 
         // 查看是否已经登陆了
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String userId = sharedPreferences.getString("userId", null);
-        if (userId != null) {
-            // 跳转到主页
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+        String profileJson = sharedPreferences.getString("userId", null);
+        String password = sharedPreferences.getString("password", null);
+        if (profileJson != null && password != null) {
+            ((EditText) findViewById(R.id.password)).setText(password);
+            ((EditText) findViewById(R.id.username)).setText(profileJson);
+            sendLoginRequest();
         }
-
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
 
         // 底部动画
         ImageView bottomImage = findViewById(R.id.bottom_image_login);
@@ -174,10 +169,10 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(v -> {
             String username = usernameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
+            String password1 = passwordEditText.getText().toString();
 
             // 检查用户名和密码是否为空
-            if (username.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || password1.isEmpty()) {
                 showAlertDialog("用户名和密码不能为空");
                 return;
             }
@@ -255,8 +250,9 @@ public class LoginActivity extends AppCompatActivity {
                         // 登录成功
                         Toast.makeText(LoginActivity.this, loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.d("Login", "Success: " + loginResponse.getMessage());
-                        // 单独保存 userId 到 SharedPreferences
+
                         saveUserIdToPreferences(userId);
+                        savePasswordToPreferences(password);
 
                         // 获取用户的详细信息并存储到 SharedPreferences
                         fetchUserDetails(userId);
@@ -292,6 +288,13 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId", userId); // 单独存储 userId
+        editor.apply();
+    }
+
+    private void savePasswordToPreferences(String password) {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("password", password); // 单独存储 password
         editor.apply();
     }
 

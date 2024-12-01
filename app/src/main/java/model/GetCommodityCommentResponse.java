@@ -4,10 +4,15 @@ import java.util.List;
 
 public class GetCommodityCommentResponse {
     private String status;
+    private String message;
     private List<Comment> comment;
 
     public String getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public List<Comment> getComment() {

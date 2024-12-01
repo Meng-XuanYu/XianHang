@@ -4,10 +4,15 @@ import java.util.Map;
 
 public class GetCommodityResponse {
     private String status;
+    private String message;
     private Commodity commodity;
 
     public String getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public Commodity getCommodity() {
