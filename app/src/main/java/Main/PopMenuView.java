@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.example.login.R;
 
@@ -49,12 +48,15 @@ public class PopMenuView {
      */
     private int mBottom = 0;
 
+    private Context context;
+    private MainActivity mainActivity;
+
     /**
      * 创建PopupWindow
      *
      */
     @SuppressLint("ResourceType")
-    private void createView(final Context context) {
+    private void createView() {
         this.mRootVew = LayoutInflater.from(context).inflate(R.layout.view_pop_menu, null);
         this.mPopupWindow = new PopupWindow(this.mRootVew, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         this.mPopupWindow.setFocusable(false); // 设置为失去焦点 方便监听返回键的监听
@@ -69,11 +71,12 @@ public class PopMenuView {
 
         this.initLayout(context);
 
-        // 发闲置按钮
-        button.setOnClickListener(view -> {
-            Intent intent = new Intent(context, UnusedActivity.class);
-            context.startActivity(intent);
+        this.button.setOnClickListener(view -> {
+            Intent intent = new Intent(mainActivity, UnusedActivity.class);
+            mainActivity.startActivity(intent);
         });
+
+        this.mCloseLayout.setOnClickListener(view -> closePopupWindowAction());
     }
 
     /**
@@ -98,11 +101,6 @@ public class PopMenuView {
         this.slogan = (ImageView) this.mRootVew.findViewById(R.id.slogan);
         this.button = (ImageButton) this.mRootVew.findViewById(R.id.button_post);
         this.button_AI = (ImageButton) this.mRootVew.findViewById(R.id.button_AI);
-
-        this.button.setOnClickListener(view -> {
-            Intent intent = new Intent(context, UnusedActivity.class);
-            context.startActivity(intent);
-        });
     }
 
     /**
@@ -136,14 +134,10 @@ public class PopMenuView {
         }
     }
 
-    /**
-     * 显示PopupWindow
-     *
-     * @param context context
-     * @param parent  parent
-     */
-    public void show(Context context, View parent) {
-        createView(context);
+    public void show(Context context, View parent, MainActivity mainActivity) {
+        this.context = context;
+        this.mainActivity = mainActivity;
+        createView();
         if (this.mPopupWindow != null && !this.mPopupWindow.isShowing()) {
             this.mPopupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, 0, 0);
             openPopupWindowAction();

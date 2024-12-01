@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         mNavigateTabBar.setRedDotVisibility(TAG_PAGE_MESSAGE, true);
         // 点击发布按钮
-        this.mTabMoreIv.setOnClickListener(v -> PopMenuView.getInstance().show(MainActivity.this, mTabMoreIv));
+        this.mTabMoreIv.setOnClickListener(v -> PopMenuView.getInstance().show(MainActivity.this, mTabMoreIv, this));
 
         // 返回键监听
         this.getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

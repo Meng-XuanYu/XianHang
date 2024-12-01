@@ -60,6 +60,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     );
     private List<Integer> img = Arrays.asList(R.drawable.item, R.drawable.item1);
 
+    private ImageView collect;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         user_comments = findViewById(R.id.user_comments);
         recommends = findViewById(R.id.recommends);
         search = findViewById(R.id.searchEditText);
+        collect = findViewById(R.id.collect);
         Context context = this;
         imageUrls.add(R.drawable.item1);
         imageUrls.add(R.drawable.item2);
@@ -95,7 +98,6 @@ public class ItemDetailActivity extends AppCompatActivity {
                 search.clearFocus();
                 Intent intent = new Intent(ItemDetailActivity.this, SearchDetailActivity.class);
                 startActivity(intent);
-
             }
         });
         LayoutInflater inflater = LayoutInflater.from(ItemDetailActivity.this);
@@ -110,6 +112,12 @@ public class ItemDetailActivity extends AppCompatActivity {
         child = findViewById(R.id.child);
         scrollView = findViewById(R.id.scrollview);
         target = findViewById(R.id.target);
+
+        // 收藏按钮
+        collect.setOnClickListener(view -> {
+            // 按钮变色
+            collect.setImageResource(R.drawable.collected);
+        });
 
         // 返回按钮
         search_back.setOnClickListener(new View.OnClickListener() {

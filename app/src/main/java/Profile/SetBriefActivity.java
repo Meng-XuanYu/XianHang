@@ -48,6 +48,9 @@ public class SetBriefActivity extends AppCompatActivity {
         );
 
         back.setOnClickListener(view -> {
+            Intent intent=new Intent(SetBriefActivity.this,
+                    create != null? CreateUserInfoActivity.class: EditUserInfoActivity.class);
+            startActivity(intent);
             finish();
         });
 
@@ -58,6 +61,7 @@ public class SetBriefActivity extends AppCompatActivity {
             Intent intent=new Intent(SetBriefActivity.this,
                     create != null? CreateUserInfoActivity.class: EditUserInfoActivity.class);
             startActivity(intent);
+            finish();
         });
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);

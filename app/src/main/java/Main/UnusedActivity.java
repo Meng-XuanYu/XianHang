@@ -56,8 +56,10 @@ public class UnusedActivity extends AppCompatActivity {
     private TextView price;
     private EditText et_input;
 
-    private LinearLayout sort_arrow = findViewById(R.id.sort_arrow);
-    private TextView sort = findViewById(R.id.sort);
+    private LinearLayout sort_arrow;
+    private TextView sort;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +81,8 @@ public class UnusedActivity extends AppCompatActivity {
         price_arrow = findViewById(R.id.price_arrow);
         price = findViewById(R.id.price);
         price_arrow.setOnClickListener(v->showKey());
+        sort_arrow = findViewById(R.id.sort_arrow);
+        sort = findViewById(R.id.sort);
 
         // 退出
         findViewById(R.id.backButton).setOnClickListener(v -> finish());

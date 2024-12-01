@@ -13,12 +13,13 @@
         android:padding="16dp"
         android:background="@drawable/rounded_background">
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/xianhang_light_yuan"
             android:scaleType="centerCrop"
+            app:riv_corner_radius="50dp"
             />
 
         <LinearLayout
@@ -34,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/avatar"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:text="红酒烩鸡"
                 android:textColor="@color/black"
                 android:textSize="18sp"
@@ -44,7 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:background="@drawable/rounded_edittext_background"
+                android:background="@drawable/rounded_blue_background"
+                android:tint="@color/blue_bh"
                 android:orientation="horizontal"
                 android:padding="5dp">
 
@@ -53,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="航力值:658"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/blue_bh"
                     android:textSize="8sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -73,11 +75,11 @@
 
         <ImageButton
             android:id="@+id/button_logout"
-            android:layout_width="35dp"
-            android:layout_height="30dp"
+            android:layout_width="30dp"
+            android:layout_height="25dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="0dp"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
@@ -113,8 +115,8 @@
                     android:layout_marginTop="5dp"
                     android:text="历史浏览"
                     android:textColor="@color/black"
-                    android:textStyle=""
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
             <LinearLayout
@@ -138,7 +140,8 @@
                     android:layout_marginTop="5dp"
                     android:text="我的收藏"
                     android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </GridLayout>
     </RelativeLayout>
@@ -185,6 +188,7 @@
 
             <!-- 按钮 1: 我发布的 -->
             <LinearLayout
+                android:id="@+id/my_release"
                 android:layout_width="10dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
@@ -204,11 +208,13 @@
                     android:layout_marginTop="5dp"
                     android:text="我发布的"
                     android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
             <!-- 按钮 2: 我卖出的 -->
             <LinearLayout
+                android:id="@+id/my_sell"
                 android:layout_width="10dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
@@ -228,11 +234,13 @@
                     android:layout_marginTop="5dp"
                     android:text="我卖出的"
                     android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- 按钮 3: 我买到的 -->
             <LinearLayout
+                android:id="@+id/my_buy"
                 android:layout_width="10dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
@@ -252,11 +260,12 @@
                     android:layout_marginTop="5dp"
                     android:text="我买到的"
                     android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
-            <!-- 按钮 4: 我收藏的 -->
             <LinearLayout
+                android:id="@+id/my_evaluate"
                 android:layout_width="10dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
@@ -276,7 +285,8 @@
                     android:layout_marginTop="5dp"
                     android:text="待评价的"
                     android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </GridLayout>
     </LinearLayout>
@@ -336,12 +346,14 @@
                     app:tint="@color/colorPrimary" />
 
                 <TextView
+                    android:id="@+id/my_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="余额：6000元"
                     android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -365,7 +377,8 @@
                     android:layout_marginTop="5dp"
                     android:text="充值"
                     android:textColor="@color/black"
-                    android:textSize="10sp" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </GridLayout>
     </LinearLayout>

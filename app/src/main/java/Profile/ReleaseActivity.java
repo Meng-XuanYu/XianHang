@@ -2,27 +2,44 @@ package Profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.login.R;
 import com.makeramen.roundedimageview.RoundedImageView;
+
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
 
+import RetrofitClient.RetrofitClient;
 import goodsPage.ItemDetailActivity;
+import model.GetMyPublishResponse;
+import network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReleaseActivity extends AppCompatActivity {
     private LinearLayout item_show1;
     private LinearLayout item_show2;
+
+    private List<GetMyPublishResponse.Commodity> commodities;
+    private String credit;
+    private String name;
+    private String avatar;
 
     private List<String> items = Arrays.asList(
             "商品标题1", "￥1000", "用户1", "4.5", "商品标题1", "￥1000", "用户1", "4.5", "商品标题1",
@@ -32,7 +49,7 @@ public class ReleaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_collect);
+        setContentView(R.layout.activity_release);
         item_show1 = findViewById(R.id.d_item_show1);
         item_show2 = findViewById(R.id.d_item_show2);
 
@@ -49,11 +66,57 @@ public class ReleaseActivity extends AppCompatActivity {
             finish();
         });
 
-        generateLayout(this, items);
+        getMyRelease();
+        generateLayout(this, commodities);
     }
 
-    private void generateLayout(Context context, List<String> items) {
-        for (String item : items) {
+    private void getMyRelease() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+
+        ApiService apiService = RetrofitClient.getApiService();
+
+        // 发送 POST 请求
+        apiService.getMyPublish(userId).enqueue(new Callback<GetMyPublishResponse>() {
+            @Override
+            public void onResponse(Call<GetMyPublishResponse> call, Response<GetMyPublishResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetMyPublishResponse getMyPublishResponse = response.body();
+                    if ("success".equals(getMyPublishResponse.getStatus())) {
+                        commodities = getMyPublishResponse.getCommodities();
+                    } else {
+                        // 登录失败
+                        Toast.makeText(ReleaseActivity.this, "getMyPublishResponse.getMessage()", Toast.LENGTH_SHORT).show();
+                        Log.e("MyRelease", "Error: " + "getMyPublishResponse.getMessage()");
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(ReleaseActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("MyRelease", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(ReleaseActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("MyRelease", "Error parsing error body: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetMyPublishResponse> call, Throwable t) {
+                Toast.makeText(ReleaseActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("MyRelease", "Request Failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void generateLayout(Context context, List<GetMyPublishResponse.Commodity> items) {
+        if (items == null) {
+            return;
+        }
+        for (GetMyPublishResponse.Commodity item : items) {
             LinearLayout itemLayout = new LinearLayout(context);
             itemLayout.setOrientation(LinearLayout.VERTICAL);
             itemLayout.setBackgroundResource(R.color.white);
@@ -73,7 +136,10 @@ public class ReleaseActivity extends AppCompatActivity {
             roundedImageView.setAdjustViewBounds(true);
             roundedImageView.setBackgroundResource(R.drawable.img);
             roundedImageView.setScaleType(ImageView.ScaleType.FIT_START);
-            roundedImageView.setImageResource(img.get(items.indexOf(item) % 2));
+            Glide.with(context)
+                    .load(item.getCommodityImage())
+                    .placeholder(R.drawable.img)  // 占位图
+                    .error(R.drawable.img).into(roundedImageView);
             roundedImageView.setCornerRadius(dpToPx(context, 10), dpToPx(context, 10), 0, 0);
             itemLayout.addView(roundedImageView);
 
@@ -84,7 +150,7 @@ public class ReleaseActivity extends AppCompatActivity {
             );
             textviewParams1.setMargins(dpToPx(context, 10), dpToPx(context, 10), 0, dpToPx(context, 5));
             textView1.setLayoutParams(textviewParams1);
-            textView1.setText("商品标题 1111111111");
+            textView1.setText(item.getCommodityDescription());
             textView1.setSingleLine(true);
             textView1.setTextSize(15);
             textView1.setTextColor(Color.BLACK);
@@ -97,7 +163,7 @@ public class ReleaseActivity extends AppCompatActivity {
             );
             textviewParams2.setMargins(dpToPx(context, 10), 0, 0, dpToPx(context, 5));
             textView2.setLayoutParams(textviewParams2);
-            textView2.setText("￥1111");
+            textView2.setText(String.valueOf(item.getCommodityValue()));
             textView2.setTextSize(18);
             textView2.setTypeface(null, Typeface.BOLD);
             textView2.setTextColor(Color.parseColor("#fd424b"));

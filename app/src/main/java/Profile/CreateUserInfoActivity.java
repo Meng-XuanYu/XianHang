@@ -104,35 +104,32 @@ public class CreateUserInfoActivity extends AppCompatActivity {
 
         loadUserProfile();
 
-        findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                String profileJson = sharedPreferences.getString("userProfile", null);
+        findViewById(R.id.save).setOnClickListener(view -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            String profileJson = sharedPreferences.getString("userProfile", null);
 
-                if (profileJson != null) {
-                    Gson gson = new Gson();
-                    GetProfileResponse profile = gson.fromJson(profileJson, GetProfileResponse.class);
+            if (profileJson != null) {
+                Gson gson = new Gson();
+                GetProfileResponse profile = gson.fromJson(profileJson, GetProfileResponse.class);
 
-                    if (profile.getName() != null && !profile.getName().isEmpty() &&
-                            profile.getAvatar() != null && !profile.getAvatar().isEmpty() &&
-                            profile.getStudentId() != null && !profile.getStudentId().isEmpty() &&
-                            profile.getIdentity() != null && !profile.getIdentity().isEmpty() &&
-                            profile.getSchool() != null && !profile.getSchool().isEmpty() &&
-                            profile.getPhone() != null && !profile.getPhone().isEmpty()) {
+                if (profile.getName() != null && !profile.getName().isEmpty() &&
+                        profile.getAvatar() != null && !profile.getAvatar().isEmpty() &&
+                        profile.getStudentId() != null && !profile.getStudentId().isEmpty() &&
+                        profile.getIdentity() != null && !profile.getIdentity().isEmpty() &&
+                        profile.getSchool() != null && !profile.getSchool().isEmpty() &&
+                        profile.getPhone() != null && !profile.getPhone().isEmpty()) {
 
-                        // All required fields are filled, navigate to MainActivity
-                        Intent intent = new Intent(CreateUserInfoActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Some fields are missing, show a toast message
-                        Toast.makeText(CreateUserInfoActivity.this, "请填写所有信息", Toast.LENGTH_SHORT).show();
-                    }
+                    // All required fields are filled, navigate to MainActivity
+                    Intent intent = new Intent(CreateUserInfoActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
-                    // Profile information is missing, show a toast message
-                    Toast.makeText(CreateUserInfoActivity.this, "用户信息加载失败", Toast.LENGTH_SHORT).show();
+                    // Some fields are missing, show a toast message
+                    Toast.makeText(CreateUserInfoActivity.this, "请填写所有信息", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                // Profile information is missing, show a toast message
+                Toast.makeText(CreateUserInfoActivity.this, "用户信息加载失败", Toast.LENGTH_SHORT).show();
             }
         });
         nickname_arrow.setOnClickListener(view -> {
@@ -140,23 +137,14 @@ public class CreateUserInfoActivity extends AppCompatActivity {
             intent.putExtra("create","111");
             startActivity(intent);
         });
-        pos_arrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         avatar_arrow.setOnClickListener(v -> openGallery());
         tel_arrow.setOnClickListener(view -> showRechargeDialog(tel.getText().toString(), "电话号码"));
         user_id_arrow.setOnClickListener(v -> showRechargeDialog(user_id.getText().toString(), "身份证号"));
         studentId_arrow.setOnClickListener(v -> showRechargeDialog(studentId.getText().toString(), "学号"));
-        brief_arrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CreateUserInfoActivity.this, SetBriefActivity.class);
-                intent.putExtra("create","111");
-                startActivity(intent);
-            }
+        brief_arrow.setOnClickListener(view -> {
+            Intent intent = new Intent(CreateUserInfoActivity.this, SetBriefActivity.class);
+            intent.putExtra("create","111");
+            startActivity(intent);
         });
         pos_arrow.setOnClickListener(v -> showBottomSheetDialog());
     }
@@ -225,13 +213,11 @@ public class CreateUserInfoActivity extends AppCompatActivity {
             }
         }
         // 配置 NumberPicker
-        if (numberPicker != null) {
-            String[] data = {"北京航空航天大学 学院路校区", "北京航空航天大学 沙河校区", "北京航空航天大学 杭州校区"};
-            numberPicker.setDisplayedValues(data);
-            numberPicker.setMinValue(0);
-            numberPicker.setMaxValue(data.length - 1);
-            numberPicker.setWrapSelectorWheel(true); // 滚动循环
-        }
+        String[] data = {"学院路校区", "沙河校区", "杭州校区"};
+        numberPicker.setDisplayedValues(data);
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(data.length - 1);
+        numberPicker.setWrapSelectorWheel(true); // 滚动循环
         // 按钮点击事件
         if (btnConfirm != null) {
             btnConfirm.setOnClickListener(v -> {

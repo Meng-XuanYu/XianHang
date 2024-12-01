@@ -20,8 +20,8 @@
             android:layout_width="7dp"
             android:layout_height="7dp"
             android:layout_gravity="top|end"
-            android:layout_marginEnd="2dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginTop="0dp"
             android:background="@drawable/red_dot_background"
             android:visibility="gone" />
     </FrameLayout>

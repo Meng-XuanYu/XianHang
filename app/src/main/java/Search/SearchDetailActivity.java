@@ -135,19 +135,16 @@ public class SearchDetailActivity extends AppCompatActivity {
                 return false;
             }
         });
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                    // 处理回车键事件
-                    Log.d("Keyboard", "Enter key pressed!");
-                    // 在这里处理回车键事件，比如提交数据
-                    return true;  // 返回 true 表示事件已处理
-                }
-                return false;
+        editText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                // 处理回车键事件
+                Log.d("Keyboard", "Enter key pressed!");
+                // 在这里处理回车键事件，比如提交数据
+                return true;  // 返回 true 表示事件已处理
             }
+            return false;
         });
-            searchHistory.addView(newLinearLayout);
+        searchHistory.addView(newLinearLayout);
 
     }
     private int dpToPx(Context context, int dp) {

@@ -2,13 +2,14 @@ package Profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -18,7 +19,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.login.R;
+import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.Arrays;
@@ -26,6 +29,7 @@ import java.util.List;
 
 import Search.SearchDetailActivity;
 import goodsPage.ItemDetailActivity;
+import model.GetProfileResponse;
 
 public class ProfileView extends AppCompatActivity {
     private LinearLayout item_show1;
@@ -43,6 +47,12 @@ public class ProfileView extends AppCompatActivity {
 
     private EditText editText;
     private ImageView imageView;
+
+    private ImageView avatar;
+    private TextView username;
+    private TextView credit;
+    private TextView jianjie;
+    private TextView school;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +74,14 @@ public class ProfileView extends AppCompatActivity {
         contentSelling = findViewById(R.id.selling);
         contentReviews = findViewById(R.id.reviews);
         scrollView = findViewById(R.id.scrollView);
+        avatar = findViewById(R.id.avatar);
+        username = findViewById(R.id.username);
+        credit = findViewById(R.id.credit_level);
+        jianjie = findViewById(R.id.signature);
+        school = findViewById(R.id.address);
 
+        // 加载用户信息
+        loadUserProfile();
 
         // 设置点击事件
         textSelling.setOnClickListener(v -> selectTabSell(textSelling, contentSelling));
@@ -89,7 +106,6 @@ public class ProfileView extends AppCompatActivity {
                 editText.clearFocus();
                 Intent intent = new Intent(ProfileView.this, SearchDetailActivity.class);
                 startActivity(intent);
-
             }
         });
         imageView.setOnClickListener(view -> {
@@ -104,7 +120,40 @@ public class ProfileView extends AppCompatActivity {
         findViewById(R.id.button_setting).setOnClickListener(v -> {
             Intent intent = new Intent(ProfileView.this, EditUserInfoActivity.class);
             startActivity(intent);
+            finish();
         });
+    }
+
+    private void loadUserProfile() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String profileJson = sharedPreferences.getString("userProfile", null);
+        float creditLevel = sharedPreferences.getFloat("userAttractiveness", 0);
+        int creditInt = (int) creditLevel;
+        String creditStr = "航力值:" + creditInt;
+        credit.setText(creditStr);
+
+        if (profileJson != null) {
+            Gson gson = new Gson();
+            GetProfileResponse profile = gson.fromJson(profileJson, GetProfileResponse.class);
+
+            if (profile.getName() != null) {
+                username.setText(profile.getName());
+            }
+            if (profile.getAvatar() != null) {
+                Glide.with(this)
+                        .load(profile.getAvatar())
+                        .placeholder(R.drawable.xianhang_light_yuan)  // 占位图
+                        .error(R.drawable.xianhang_light_yuan).into(avatar);
+            }
+            if (profile.getText() != null) {
+                jianjie.setText(profile.getText());
+            }
+            if (profile.getSchool() != null) {
+                school.setText(profile.getSchool());
+            }
+        } else {
+            Log.e("SharedPreferences", "用户信息不存在");
+        }
     }
 
     private void selectTabSell(TextView selectedTextView, ScrollView selectedContent) {

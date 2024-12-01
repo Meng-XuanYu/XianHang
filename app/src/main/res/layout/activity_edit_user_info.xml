@@ -285,10 +285,6 @@
                             android:textSize="20sp" />
                         
                     </LinearLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E0E0E0" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -331,7 +327,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="我的航力值"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/hanglizhi"
@@ -340,7 +337,8 @@
                     android:text="1000"
                     android:layout_marginRight="20dp"
                     android:textSize="18sp"
-                    android:textColor="@color/blue_bh" />
+                    android:textColor="@color/blue_bh"
+                    android:textStyle="bold"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>

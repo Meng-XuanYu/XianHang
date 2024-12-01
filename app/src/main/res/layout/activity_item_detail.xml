@@ -209,7 +209,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp">
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:id="@+id/user_img1"
@@ -440,31 +440,59 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/white">
-        <LinearLayout
+        <RelativeLayout
             android:orientation="horizontal"
             android:id="@+id/parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <LinearLayout
+            android:id="@+id/liuyan"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/child"
-                android:layout_width="23dp"
+                android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/message"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:scaleType="fitCenter"/>
+                android:background="@drawable/message"
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:id="@+id/child_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="留言"
+                android:textSize="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="3dp"
+                android:textStyle="bold"
+                android:textColor="@color/blue_bh"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="60dp">
+
+            <ImageButton
+                android:id="@+id/collect"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/collect"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:id="@+id/collect_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="收藏"
                 android:textSize="10dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="3dp"

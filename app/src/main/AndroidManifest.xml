@@ -82,6 +82,14 @@
         <activity
             android:name="Main.sortActivity"
             android:exported="true" />
+        <activity android:name="Profile.SellActivity"
+            android:exported="true" />
+        <activity android:name="Profile.BuyActivity"
+            android:exported="true" />
+        <activity android:name="Profile.ReleaseActivity"
+            android:exported="true" />
+        <activity android:name="Profile.EvaluateActivity"
+            android:exported="true" />
         <activity
             android:name="Login.LoginActivity"
             android:exported="true">
