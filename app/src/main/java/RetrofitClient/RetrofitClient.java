@@ -1,27 +1,29 @@
 package RetrofitClient;
 
 import network.ApiService;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static final String BASE_URL = "http://10.192.220.224:8000/"; // 替换为后端地址
 //    private static final String BASE_URL = "http://10.0.2.2:8000/"; // 替换为后端地址
-    private static Retrofit retrofit;
+    private static Retrofit retrofit = null;
 
-    // 单例模式获取 Retrofit 实例
-    public static Retrofit getInstance() {
+    public static ApiService getApiService() {
         if (retrofit == null) {
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .connectTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                    .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                    .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+                    .build();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
-        return retrofit;
-    }
-
-    // 提供 ApiService 实例
-    public static ApiService getApiService() {
-        return getInstance().create(ApiService.class);
+        return retrofit.create(ApiService.class);
     }
 }

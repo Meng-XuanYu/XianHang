@@ -103,14 +103,16 @@ public class UnusedActivity extends AppCompatActivity {
         pos = findViewById(R.id.pos);
         editText = findViewById(R.id.editText);
         imageList = new ArrayList<>();
+        imageview = findViewById(R.id.imageView);
 
         String ai = String.valueOf(getIntent().getBooleanExtra("ai",false));
         if(ai.equals("true")){
             editText_name.setText(getIntent().getStringExtra("commodityName"));
             editText.setText(getIntent().getStringExtra("commodityDescription"));
             price.setText(getIntent().getStringExtra("commodityValue"));
-            imageList.add(Uri.parse(getIntent().getStringExtra("commodityImage")));
-            generateImg(Uri.parse(getIntent().getStringExtra("commodityImage")));
+            Uri selectedImageUri = Uri.parse(getIntent().getStringExtra("commodityImage"));
+            generateImg(selectedImageUri); // 加载图片到 ImageView
+            imageList.add(selectedImageUri);
         }
 
         // 校区
@@ -125,7 +127,6 @@ public class UnusedActivity extends AppCompatActivity {
         // 退出
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
-        imageview = findViewById(R.id.imageView);
         imageview.setOnClickListener(v->openGallery());
 
         // 选择分类
@@ -234,7 +235,6 @@ public class UnusedActivity extends AppCompatActivity {
         roundedImageView.setLayoutParams(params);
         roundedImageView.setImageURI(uri);
         roundedImageView.setCornerRadius(dpToPx(this,10));
-        roundedImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         frameLayout.addView(roundedImageView);
         RoundedImageView roundedImageView1 = new RoundedImageView(this);
         FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(

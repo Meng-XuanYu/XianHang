@@ -29,7 +29,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Multipart;
 
 public class WaitActivity extends AppCompatActivity {
     private RoundedImageView roundedImageView;
@@ -106,7 +105,7 @@ public class WaitActivity extends AppCompatActivity {
                         intent.putExtra("commodityDescription", aiPublishResponse.getCommodityDescription());
                         intent.putExtra("commodityValue", aiPublishResponse.getCommodityValue());
                         intent.putExtra("commodityKeywords", aiPublishResponse.getCommodityKeywords());
-                        intent.putExtra("commodityImage", aiPublishResponse.getCommodityImage());
+                        intent.putExtra("commodityImage", getIntent().getStringExtra("imageUri"));
                         intent.putExtra("ai", true);
                         startActivity(intent);
                         finish();
