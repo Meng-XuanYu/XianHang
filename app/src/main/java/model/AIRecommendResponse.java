@@ -57,7 +57,7 @@ public class AIRecommendResponse {
         }
 
         public String getCommodityValue() {
-            return commodityValue;
+            return "￥" + commodityValue;
         }
 
         public String getCommodityImage() {

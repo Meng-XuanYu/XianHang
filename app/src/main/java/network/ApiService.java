@@ -58,7 +58,11 @@ public interface ApiService {
     Call<AddCollectionResponse> addCollection(@Body AddCollectionRequest request);
     @GET("get_collections/")
     Call<GetCollectionsResponse> getCollections(@Query("userId") String userId);
-    @POST("clear_collection/")
+    @POST("isCollected/")
+    Call<IsCollectedResponse> isCollected(@Body IsCollectedRequest request);
+    @POST("delete_collection/")
+    Call<DeleteCollectionResponse> deleteCollected(@Body DeleteCollectionRequest request);
+    @GET("clear_collection/")
     Call<ClearCollectionResponse> clearHistory(@Body ClearCollectionRequest request);
     @GET("searchCommodity/")
     Call<SearchCommodityResponse> searchCommodity(@Query("q") String query);
@@ -88,12 +92,13 @@ public interface ApiService {
     Call<ConfirmReceiveResponse> confirmReceive(@Body ConfirmReceiveRequest request);
     @POST("ai_search/")
     Call<AISearchResponse> aiSearch(@Body AISearchRequest requestBody);
-    @POST("ai_recommend/")
+    @POST("get/ai_recommend/")
     Call<AIRecommendResponse> aiRecommend(@Body AIRecommendRequest requestBody);
     @POST("ai_extend/")
     Call<AIExtendResponse> aiExtend(@Body AIExtendRequest requestBody);
+    @Multipart
     @POST("ai_publish/")
-    Call<AIPublishResponse> aiPublish(@Body AIPublishRequest requestBody);
+    Call<AIPublishResponse> aiPublish(@Part MultipartBody.Part image);
 
     @GET("getMyPublish/")
     Call<GetMyPublishResponse> getMyPublish(@Query("userId") String userId);
@@ -121,4 +126,13 @@ public interface ApiService {
 
     @POST("setRead/")
     Call<SetReadResponse> setRead(@Body SetReadRequest request);
+
+    @GET("getCommodityListByUserSchool/")
+    Call<GetCommodityListByUserSchoolResponse> getCommodityListByUserSchool(@Query("commoditySchool") String commoditySchool);
+    @POST("getChatList/")
+    Call<GetChatListResponse> getChatList(@Body GetChatListRequest request);
+    @POST("getOrCreateChat/")
+    Call<GetOrCreateChatResponse> getOrCreateChat(@Body GetOrCreateChatRequest request);
+    @POST("deleteChat/")
+    Call<DeleteChatResponse> deleteChat(@Body DeleteChatRequest request);
 }

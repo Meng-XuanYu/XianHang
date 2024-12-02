@@ -22,6 +22,9 @@ public class GetCommodityCommentResponse {
     public static class Comment {
         private String leaveMessageContent;
         private String leaveMessageDate;
+        private String userName;
+        private String userImage;
+        private String userschool;
 
         public String getLeaveMessageContent() {
             return leaveMessageContent;
@@ -29,6 +32,18 @@ public class GetCommodityCommentResponse {
 
         public String getLeaveMessageDate() {
             return leaveMessageDate;
+        }
+
+        public String getUserImage() {
+            return userImage;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public String getUserSchool() {
+            return userschool;
         }
     }
 }

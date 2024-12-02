@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GetCommodityResponse {
@@ -23,12 +24,29 @@ public class GetCommodityResponse {
         private String sellerId;
         private String commodityId;
         private String commodityName;
+
         private String commodityDescription;
         private Double commodityValue;
         private String commodityKeywords;
         private String commodityClass;
         private String commodityImage1;
         private Map<String, String> additionalImages;
+        private String school;
+
+        private String sellerName;
+        private String sellerImage;
+
+        public String getSchool() {
+            return school;
+        }
+
+        public String getSellerImage() {
+            return sellerImage;
+        }
+
+        public String getSellerName() {
+            return sellerName;
+        }
 
         public String getSellerId() {
             return sellerId;
@@ -46,8 +64,8 @@ public class GetCommodityResponse {
             return commodityDescription;
         }
 
-        public Double getCommodityValue() {
-            return commodityValue;
+        public String getCommodityValue() {
+            return "￥"+commodityValue;
         }
 
         public String getCommodityKeywords() {
@@ -62,8 +80,13 @@ public class GetCommodityResponse {
             return commodityImage1;
         }
 
-        public Map<String, String> getAdditionalImages() {
-            return additionalImages;
+        public ArrayList<String> getAdditionalImages() {
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add(commodityImage1);
+            if(additionalImages!=null){
+                tmp.addAll(additionalImages.values());
+            }
+            return tmp;
         }
     }
 }

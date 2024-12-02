@@ -1,5 +1,6 @@
 package Message;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,42 +66,48 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public static class SentMessageViewHolder extends RecyclerView.ViewHolder {
         TextView textViewMessage;
-        ImageView imageViewAvatar;
+        com.makeramen.roundedimageview.RoundedImageView imageViewAvatar;
         LinearLayout messageContainer;
+        TextView textViewTime;
 
         public SentMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewMessage = itemView.findViewById(R.id.textViewMessage);
             imageViewAvatar = itemView.findViewById(R.id.imageViewAvatar);
             messageContainer = itemView.findViewById(R.id.messageContainer);
+            textViewTime = itemView.findViewById(R.id.textViewTime);
         }
 
         public void bind(Message message) {
             textViewMessage.setText(message.getContent());
+            textViewTime.setText(message.getTime());
+            Uri uri = Uri.parse(message.getSenderAvatarUrl());
             Glide.with(itemView.getContext())
-                    //.load(message.getSenderAvatarUrl())
-                    .load(R.drawable.xianhang_light_fang)
+                    .load(uri)
                     .into(imageViewAvatar);
         }
     }
 
     public static class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
         TextView textViewMessage;
-        ImageView imageViewAvatar;
+        com.makeramen.roundedimageview.RoundedImageView imageViewAvatar;
         LinearLayout messageContainer;
+        TextView textViewTime;
 
         public ReceivedMessageViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewMessage = itemView.findViewById(R.id.textViewMessage);
             imageViewAvatar = itemView.findViewById(R.id.imageViewAvatar);
             messageContainer = itemView.findViewById(R.id.messageContainer);
+            textViewTime = itemView.findViewById(R.id.textViewTime);
         }
 
         public void bind(Message message) {
             textViewMessage.setText(message.getContent());
+            textViewTime.setText(message.getTime());
+            Uri uri = Uri.parse(message.getSenderAvatarUrl());
             Glide.with(itemView.getContext())
-                    //.load(message.getSenderAvatarUrl())
-                    .load(R.drawable.xianhang_light_yuan)
+                    .load(uri)
                     .into(imageViewAvatar);
         }
     }

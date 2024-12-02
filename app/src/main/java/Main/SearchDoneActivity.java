@@ -76,6 +76,7 @@ public class SearchDoneActivity extends AppCompatActivity {
             Intent intent = new Intent(SearchDoneActivity.this, SearchDetailActivity.class);
             startActivity(intent);
             finish();
+
         });
         search_back.setOnClickListener(view -> {
             Intent intent = new Intent(SearchDoneActivity.this, SearchDetailActivity.class);
@@ -84,11 +85,11 @@ public class SearchDoneActivity extends AppCompatActivity {
         });
         if(searchText!=null){
             search();
-            EditText searchEditText = findViewById(R.id.searchEditText);
+            TextView searchEditText = findViewById(R.id.searchEditText);
             searchEditText.setText(searchText);
         } else {
             aiSearch();
-            EditText searchEditText = findViewById(R.id.searchEditText);
+            TextView searchEditText = findViewById(R.id.searchEditText);
             searchEditText.setText(aiSearchText);
         }
     }

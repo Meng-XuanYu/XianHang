@@ -1,25 +1,45 @@
 package Message;
 
-public class MessageLan {
-    private int avatarResId;
-    private String messageText;
-    private int messageImageResId;
+import android.net.Uri;
 
-    public MessageLan(int avatarResId, String messageText, int messageImageResId) {
-        this.avatarResId = avatarResId;
+public class MessageLan {
+    private Uri avatar;
+    private String messageText;
+    private Uri commodityImage;
+    private String name;
+    private String otherId;
+    private String commodityId;
+
+    public MessageLan(Uri uri, String messageText, Uri commodityImage, String name, String otherId, String commodityId) {
+        this.avatar = uri;
         this.messageText = messageText;
-        this.messageImageResId = messageImageResId;
+        this.name = name;
+        this.commodityImage = commodityImage;
+        this.otherId = otherId;
+        this.commodityId = commodityId;
     }
 
-    public int getAvatarResId() {
-        return avatarResId;
+    public String getCommodityId() {
+        return commodityId;
+    }
+
+    public String getOtherId() {
+        return otherId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Uri getAvatar() {
+        return avatar;
     }
 
     public String getMessageText() {
         return messageText;
     }
 
-    public int getMessageImageResId() {
-        return messageImageResId;
+    public Uri getCommodityImage() {
+        return commodityImage;
     }
 }

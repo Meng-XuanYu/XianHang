@@ -1,13 +1,13 @@
 package model;
 
 public class AIPublishRequest {
-    private String imageUrl;
+    private String image;
 
     public AIPublishRequest(String imageUrl) {
-        this.imageUrl = imageUrl;
+        this.image = imageUrl;
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return image;
     }
 }

@@ -94,12 +94,6 @@ public class UnusedActivity extends AppCompatActivity {
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
 
-        String u= getIntent().getStringExtra("uri");
-        if(u!=null){
-            Uri uri = Uri.parse(u);
-            generateImg(uri);
-        }
-
         price_arrow = findViewById(R.id.price_arrow);
         price = findViewById(R.id.price);
         price_arrow.setOnClickListener(v->showKey());
@@ -109,6 +103,15 @@ public class UnusedActivity extends AppCompatActivity {
         pos = findViewById(R.id.pos);
         editText = findViewById(R.id.editText);
         imageList = new ArrayList<>();
+
+        String ai = String.valueOf(getIntent().getBooleanExtra("ai",false));
+        if(ai.equals("true")){
+            editText_name.setText(getIntent().getStringExtra("commodityName"));
+            editText.setText(getIntent().getStringExtra("commodityDescription"));
+            price.setText(getIntent().getStringExtra("commodityValue"));
+            imageList.add(Uri.parse(getIntent().getStringExtra("commodityImage")));
+            generateImg(Uri.parse(getIntent().getStringExtra("commodityImage")));
+        }
 
         // 校区
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);

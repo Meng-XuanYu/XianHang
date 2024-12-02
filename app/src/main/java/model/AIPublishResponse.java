@@ -4,9 +4,9 @@ public class AIPublishResponse {
     private String status;
     private String commodityName;
     private String commodityDescription;
-    private int commodityValue;
+    private String commodityValue;
     private String commodityKeywords;
-    private int commodityImage;
+    private String commodityImage;
 
     public String getStatus() {
         return status;
@@ -20,7 +20,7 @@ public class AIPublishResponse {
         return commodityDescription;
     }
 
-    public int getCommodityValue() {
+    public String getCommodityValue() {
         return commodityValue;
     }
 
@@ -28,7 +28,7 @@ public class AIPublishResponse {
         return commodityKeywords;
     }
 
-    public int getCommodityImage() {
+    public String getCommodityImage() {
         return commodityImage;
     }
 }

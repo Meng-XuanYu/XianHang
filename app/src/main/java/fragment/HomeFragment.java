@@ -28,7 +28,9 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import Main.SortActivity;
@@ -233,6 +235,19 @@ public class HomeFragment extends Fragment {
     private void generateLayout(Context context, List<AIRecommendResponse.Recommendation> recommendations,List<GetCommodityListByClassResponse.Commodity> items) {
         if(commodities == null){
             return;
+        }
+        ArrayList<Integer> list = new ArrayList<>(); // 用于存储推荐商品的id
+        for (AIRecommendResponse.Recommendation item : recommendations) {
+            list.add(Integer.parseInt(item.getCommodityId()));
+        }
+        Iterator<GetCommodityListByClassResponse.Commodity> iterator = items.iterator();
+        while (iterator.hasNext()) {
+            GetCommodityListByClassResponse.Commodity item = iterator.next();
+            if (list.contains(Integer.parseInt(item.getCommodityId()))) {
+                iterator.remove();
+            } else {
+                list.add(Integer.parseInt(item.getCommodityId()));
+            }
         }
         int index = 0;
         for (; index<recommendations.size(); index++) {
@@ -496,9 +511,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void generate(){
-
-    }
 
     // dp 转 px 工具函数
     private int dpToPx(Context context, float dp) {

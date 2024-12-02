@@ -1,6 +1,9 @@
 package Main;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -59,6 +62,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            Intent intent = new Intent(MainActivity.this, WaitActivity.class);
+            if (selectedImage != null) {
+                intent.putExtra("imageUri", selectedImage.toString());
+            } else {
+                Log.e("MainActivity", "onActivityResult: selectedImage is null");
+            }
+            startActivity(intent);
+        }
     }
 
     @Override

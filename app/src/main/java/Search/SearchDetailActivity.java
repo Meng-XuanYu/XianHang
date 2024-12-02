@@ -36,6 +36,9 @@ import java.util.List;
 
 import Main.SearchDoneActivity;
 import RetrofitClient.RetrofitClient;
+import model.AISearchRequest;
+import model.GetCommodityResponse;
+import model.GetCommodityResponse;
 import model.SearchCommodityResponse;
 import model.SearchCommodityResponse;
 import network.ApiService;
@@ -50,7 +53,6 @@ public class SearchDetailActivity extends AppCompatActivity {
     private LinearLayout searchHistory;
     private LinearLayout searchGuess;
     private EditText editText;
-    private int id;
 
 
     @Override
@@ -65,6 +67,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         searchImage = findViewById(R.id.search_img);
         aiSearchImage = findViewById(R.id.ai_search);
 
+
         // 沉浸式体验
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_FULLSCREEN |
@@ -74,17 +77,26 @@ public class SearchDetailActivity extends AppCompatActivity {
 
         // searchImage动作
         searchImage.setOnClickListener(view -> {
+            if (editText.getText().toString().isEmpty()) {
+                Toast.makeText(SearchDetailActivity.this, "请输入搜索内容", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(SearchDetailActivity.this, SearchDoneActivity.class);
-            intent.putExtra("text",editText.getText().toString());
+            intent.putExtra("text", editText.getText().toString());
             startActivity(intent);
             finish();
         });
         aiSearchImage.setOnClickListener(view -> {
+            if (editText.getText().toString().isEmpty()) {
+                Toast.makeText(SearchDetailActivity.this, "请输入搜索内容", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(SearchDetailActivity.this, SearchDoneActivity.class);
-            intent.putExtra("ai_text",editText.getText().toString());
+            intent.putExtra("ai_text", editText.getText().toString());
             startActivity(intent);
             finish();
-        });;
+        });
+        ;
 
         editText.requestFocus();
         imageView.setOnClickListener(view -> finish());

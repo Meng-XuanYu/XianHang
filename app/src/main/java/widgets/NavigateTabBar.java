@@ -197,26 +197,13 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         }
     }
 
-    /**
-     * 显示holder对应的fragment
-     *
-     * @param holder
-     */
     private void showFragment(ViewHolder holder) {
         FragmentTransaction transaction = this.mFragmentActivity.getSupportFragmentManager().beginTransaction();
-        if (isFragmentShown(transaction, holder.tag)) {
-            return;
-        }
         setCurrSelectedTabByTag(holder.tag);
 
-        Fragment fragment = this.mFragmentActivity.getSupportFragmentManager().findFragmentByTag(holder.tag);
-        if (fragment == null) {
-            fragment = getFragmentInstance(holder.tag);
-            transaction.add(this.mMainContentLayoutId, fragment, holder.tag);
-        }
-        else {
-            transaction.show(fragment);
-        }
+        // Always create a new instance of the fragment
+        Fragment fragment = getFragmentInstance(holder.tag);
+        transaction.replace(this.mMainContentLayoutId, fragment, holder.tag);
         transaction.commit();
         this.mCurrentSelectedTab = holder.tabIndex;
     }
@@ -238,11 +225,6 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         return false;
     }
 
-    /**
-     * 设置当前选中tab的图片和文字颜色
-     *
-     * @param tag
-     */
     private void setCurrSelectedTabByTag(String tag) {
         if (TextUtils.equals(this.mCurrentTag, tag)) {
             return;
@@ -260,12 +242,6 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         this.mCurrentTag = tag;
     }
 
-    /**
-     * 获取fragment实例
-     *
-     * @param tag
-     *
-     */
     private Fragment getFragmentInstance(String tag) {
         Fragment fragment = null;
         for (ViewHolder holder : this.mViewHolderList) {

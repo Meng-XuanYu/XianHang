@@ -27,7 +27,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
             ViewPager2 viewPager = findViewById(R.id.viewPager);
 
-            List<Integer> imageUrls = getIntent().getIntegerArrayListExtra("images");
+            List<String> imageUrls = getIntent().getStringArrayListExtra("images");
             int startPosition = getIntent().getIntExtra("position", 0);
 
             FullScreenAdapter adapter = new FullScreenAdapter(this, imageUrls);

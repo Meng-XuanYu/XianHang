@@ -11,7 +11,7 @@
         android:background="@color/background_gray">
 
         <TextView
-            android:id="@+id/textViewChatUser"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -89,7 +89,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/user_pos1"
+                android:id="@+id/pos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"

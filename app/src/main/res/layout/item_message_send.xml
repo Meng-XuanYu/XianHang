@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="8dp"
+    android:padding="5dp"
     android:gravity="end">
 
     <LinearLayout
@@ -19,13 +20,26 @@
             android:background="@drawable/rounded_background_blue"
             android:padding="10dp"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_gravity="end"/>
+
+        <TextView
+            android:id="@+id/textViewTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            android:layout_gravity="end"
+            android:textSize="10sp" />
     </LinearLayout>
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/imageViewAvatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
-        android:src="@drawable/xianhang_light_fang" />
+        android:layout_marginEnd="3dp"
+        android:layout_marginStart="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/xianhang_light_fang"
+        app:riv_corner_radius="500dp"
+        />
 </LinearLayout>

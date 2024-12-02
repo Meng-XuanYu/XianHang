@@ -2,7 +2,7 @@ package model;
 
 import java.util.List;
 
-public class GetCommodityListByClassResponse {
+public class GetCommodityListByUserSchoolResponse {
     private String status;
     private String message;
     private List<Commodity> commodities;
@@ -24,23 +24,8 @@ public class GetCommodityListByClassResponse {
         private String commodityId;
         private String commodityName;
         private String commodityDescription;
-        private double commodityValue;
+        private String commodityValue;
         private String commodityImage;
-        private String sellerName;
-        private String sellerImage;
-        private String sellerAttractiveness;
-
-        public String getSellerAttractiveness() {
-            return sellerAttractiveness;
-        }
-
-        public String getSellerImage() {
-            return sellerImage;
-        }
-
-        public String getSellerName() {
-            return sellerName;
-        }
 
         public String getSellerId() {
             return sellerId;

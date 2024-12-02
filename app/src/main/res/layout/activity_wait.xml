@@ -15,7 +15,7 @@
 
         app:riv_corner_radius="10dp"
         android:src="@drawable/item"
-        android:scaleType="fitXY" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:layout_width="wrap_content"

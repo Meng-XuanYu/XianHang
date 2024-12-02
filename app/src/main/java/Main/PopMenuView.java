@@ -1,10 +1,13 @@
 package Main;
 
 
+import static android.app.Activity.RESULT_OK;
+
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +79,14 @@ public class PopMenuView {
             mainActivity.startActivity(intent);
         });
 
+        this.button_AI.setOnClickListener(view -> openGallery());
+
         this.mCloseLayout.setOnClickListener(view -> closePopupWindowAction());
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        mainActivity.startActivityForResult(intent, 100);
     }
 
     /**

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,12 +25,21 @@ import com.example.login.R;
 import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
+import Login.LoginActivity;
+import RetrofitClient.RetrofitClient;
 import Search.SearchDetailActivity;
 import goodsPage.ItemDetailActivity;
+import model.GetAttractivenessResponse;
 import model.GetProfileResponse;
+import network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileView extends AppCompatActivity {
     private LinearLayout item_show1;
@@ -79,48 +89,179 @@ public class ProfileView extends AppCompatActivity {
         credit = findViewById(R.id.credit_level);
         jianjie = findViewById(R.id.signature);
         school = findViewById(R.id.address);
+        
+        String userId = getIntent().getStringExtra("userId");
+        if (userId == null) {
+            // 加载用户信息
+            loadUserProfile();
 
-        // 加载用户信息
-        loadUserProfile();
+            // 设置点击事件
+            textSelling.setOnClickListener(v -> selectTabSell(textSelling, contentSelling));
+            textReviews.setOnClickListener(v -> selectTabReviews(textReviews, contentReviews));
 
-        // 设置点击事件
-        textSelling.setOnClickListener(v -> selectTabSell(textSelling, contentSelling));
-        textReviews.setOnClickListener(v -> selectTabReviews(textReviews, contentReviews));
+            textSelling.setTextColor(ContextCompat.getColor(this, R.color.blue_bh));  // 设置蓝色字体
+            textSelling.setPaintFlags(textSelling.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);  // 加下划线
+            // 填充 content_selling 布局
+            item_show1 = findViewById(R.id.d_item_show1);
+            item_show2 = findViewById(R.id.d_item_show2);
 
-        textSelling.setTextColor(ContextCompat.getColor(this, R.color.blue_bh));  // 设置蓝色字体
-        textSelling.setPaintFlags(textSelling.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);  // 加下划线
-        // 填充 content_selling 布局
-        item_show1 = findViewById(R.id.d_item_show1);
-        item_show2 = findViewById(R.id.d_item_show2);
+            generateLayout(this, items);
+            generateComments(this, null);
 
-        generateLayout(this, items);
-        generateComments(this, null);
+            contentReviews.setVisibility(View.GONE);
 
-        contentReviews.setVisibility(View.GONE);
+            editText = findViewById(R.id.searchEditText);
+            imageView = findViewById(R.id.search_img);
 
-        editText = findViewById(R.id.searchEditText);
-        imageView = findViewById(R.id.search_img);
-
-        editText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                editText.clearFocus();
+            editText.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    editText.clearFocus();
+                    Intent intent = new Intent(ProfileView.this, SearchDetailActivity.class);
+                    startActivity(intent);
+                }
+            });
+            imageView.setOnClickListener(view -> {
                 Intent intent = new Intent(ProfileView.this, SearchDetailActivity.class);
                 startActivity(intent);
+            });
+
+            // 返回按钮
+            findViewById(R.id.search_back).setOnClickListener(v -> finish());
+
+            // edit button
+            findViewById(R.id.button_setting).setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileView.this, EditUserInfoActivity.class);
+                startActivity(intent);
+                finish();
+            });
+        } else {
+            loadOtherUserProfile(userId);
+            loadOtherCredit(userId);
+
+            // 设置点击事件
+            textSelling.setOnClickListener(v -> selectTabSell(textSelling, contentSelling));
+            textReviews.setOnClickListener(v -> selectTabReviews(textReviews, contentReviews));
+
+            textSelling.setTextColor(ContextCompat.getColor(this, R.color.blue_bh));  // 设置蓝色字体
+            textSelling.setPaintFlags(textSelling.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);  // 加下划线
+            // 填充 content_selling 布局
+            item_show1 = findViewById(R.id.d_item_show1);
+            item_show2 = findViewById(R.id.d_item_show2);
+
+            generateLayout(this, items);
+            generateComments(this, null);
+
+            contentReviews.setVisibility(View.GONE);
+
+            editText = findViewById(R.id.searchEditText);
+            imageView = findViewById(R.id.search_img);
+
+            editText.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    editText.clearFocus();
+                    Intent intent = new Intent(ProfileView.this, SearchDetailActivity.class);
+                    startActivity(intent);
+                }
+            });
+            imageView.setOnClickListener(view -> {
+                Intent intent = new Intent(ProfileView.this, SearchDetailActivity.class);
+                startActivity(intent);
+            });
+
+            // 返回按钮
+            findViewById(R.id.search_back).setOnClickListener(v -> finish());
+
+            // edit button
+            findViewById(R.id.button_setting).setVisibility(View.GONE);
+        }
+    }
+    
+    private void loadOtherCredit(String userId) {
+        ApiService apiService = RetrofitClient.getApiService();
+
+        apiService.getAttractiveness(userId).enqueue(new Callback<GetAttractivenessResponse>() {
+            @Override
+            public void onResponse(Call<GetAttractivenessResponse> call, Response<GetAttractivenessResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetAttractivenessResponse attractivenessResponse = response.body();
+                    if ("success".equals(attractivenessResponse.getStatus())) {
+                        int creditInt = attractivenessResponse.getAttractiveness();
+                        String creditStr = "航力值:" + creditInt;
+                        credit.setText(creditStr);
+                    } else {
+                        Toast.makeText(ProfileView.this, "获取航力值失败: " + attractivenessResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(ProfileView.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("getAttractiveness", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(ProfileView.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("getAttractiveness", "Error parsing error body: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetAttractivenessResponse> call, Throwable t) {
+                Toast.makeText(ProfileView.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("getAttractiveness", "Request Failed: " + t.getMessage());
             }
         });
-        imageView.setOnClickListener(view -> {
-            Intent intent = new Intent(ProfileView.this, SearchDetailActivity.class);
-            startActivity(intent);
-        });
+    }
+    
+    private void loadOtherUserProfile(String userId) {
+        ApiService apiService = RetrofitClient.getApiService();
 
-        // 返回按钮
-        findViewById(R.id.search_back).setOnClickListener(v -> finish());
+        // 发送 GET 请求获取用户信息
+        apiService.getProfile(userId).enqueue(new Callback<GetProfileResponse>() {
+            @Override
+            public void onResponse(Call<GetProfileResponse> call, Response<GetProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetProfileResponse profileResponse = response.body();
+                    if ("success".equals(profileResponse.getStatus())) {
+                        if (profileResponse.getName() != null) {
+                            username.setText(profileResponse.getName());
+                        }
+                        if (profileResponse.getAvatar() != null) {
+                            Glide.with(ProfileView.this)
+                                    .load(profileResponse.getAvatar())
+                                    .placeholder(R.drawable.xianhang_light_yuan)  // 占位图
+                                    .error(R.drawable.xianhang_light_yuan).into(avatar);
+                        }
+                        if (profileResponse.getText() != null) {
+                            jianjie.setText(profileResponse.getText());
+                        }
+                        if (profileResponse.getSchool() != null) {
+                            school.setText(profileResponse.getSchool());
+                        }
+                    } else {
+                        Toast.makeText(ProfileView.this, "获取用户信息失败: " + profileResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(ProfileView.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("getProfile", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(ProfileView.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("getProfile", "Error parsing error body: ", e);
+                    }
+                }
+            }
 
-        // edit button
-        findViewById(R.id.button_setting).setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileView.this, EditUserInfoActivity.class);
-            startActivity(intent);
-            finish();
+            @Override
+            public void onFailure(Call<GetProfileResponse> call, Throwable t) {
+                Toast.makeText(ProfileView.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("getProfile", "Request Failed: " + t.getMessage());
+            }
         });
     }
 

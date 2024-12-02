@@ -1,11 +1,12 @@
 package model;
 
+import java.nio.channels.Pipe;
 import java.util.List;
 
 public class AISearchResponse {
     private String status;
-    private String message;
     private List<Commodity> result;
+    private String message;
 
     public String getStatus() {
         return status;
@@ -24,7 +25,7 @@ public class AISearchResponse {
         private String commodityId;
         private String commodityName;
         private String commodityDescription;
-        private int commodityValue;
+        private String commodityValue;
         private String commodityImage;
         private String sellerName;
         private String sellerImage;
@@ -58,12 +59,13 @@ public class AISearchResponse {
             return commodityDescription;
         }
 
-        public int getCommodityValue() {
-            return commodityValue;
+        public String getCommodityValue() {
+            return "￥" + commodityValue;
         }
 
         public String getCommodityImage() {
             return commodityImage;
         }
+
     }
 }

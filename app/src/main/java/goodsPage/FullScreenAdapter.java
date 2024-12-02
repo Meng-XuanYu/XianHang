@@ -17,9 +17,9 @@ import java.util.List;
 
 public class FullScreenAdapter extends RecyclerView.Adapter<FullScreenAdapter.ViewHolder> {
     private final Context context;
-    private final List<Integer> imageUrls;
+    private final List<String> imageUrls;
 
-    public FullScreenAdapter(Context context, List<Integer> imageUrls) {
+    public FullScreenAdapter(Context context, List<String> imageUrls) {
         this.context = context;
         this.imageUrls = imageUrls;
     }
@@ -33,7 +33,7 @@ public class FullScreenAdapter extends RecyclerView.Adapter<FullScreenAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Integer imageUrl = imageUrls.get(position);
+        String imageUrl = imageUrls.get(position);
         Glide.with(context).load(imageUrl).into(holder.imageView);
         holder.imageView.setOnClickListener(v -> {
             if (context instanceof Activity) {

@@ -23,12 +23,16 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import RetrofitClient.RetrofitClient;
 import goodsPage.ItemDetailActivity;
+import model.AIRecommendResponse;
 import model.GetAttractivenessResponse;
+import model.GetCommodityListByClassResponse;
 import model.GetHistoryResponse;
 import model.GetProfileResponse;
 import network.ApiService;
@@ -122,6 +126,16 @@ public class HistoryActivity extends AppCompatActivity {
     private void generateLayout(Context context, List<GetHistoryResponse.Commodity> commodities) {
         if(commodities == null){
             return;
+        }
+        ArrayList<Integer> list = new ArrayList<>(); // 用于存储推荐商品的id
+        Iterator<GetHistoryResponse.Commodity> iterator = commodities.iterator();
+        while (iterator.hasNext()) {
+            GetHistoryResponse.Commodity item = iterator.next();
+            if (list.contains(Integer.parseInt(item.getCommodityId()))) {
+                iterator.remove();
+            } else {
+                list.add(Integer.parseInt(item.getCommodityId()));
+            }
         }
         for (GetHistoryResponse.Commodity item : commodities) {
             LinearLayout itemLayout = new LinearLayout(context);
@@ -245,7 +259,7 @@ public class HistoryActivity extends AppCompatActivity {
             itemLayout.addView(innerLayout);
 
 
-            if(items.indexOf(item) %2 == 0){
+            if(commodities.indexOf(item) %2 == 0){
                 item_show1.addView(itemLayout);
             } else   {
                 item_show2.addView(itemLayout);

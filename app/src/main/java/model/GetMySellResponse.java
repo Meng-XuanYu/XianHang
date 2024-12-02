@@ -36,7 +36,7 @@ public class GetMySellResponse {
         public String getCommodityId() { return commodityId; }
         public String getCommodityName() { return commodityName; }
         public String getCommodityDescription() { return commodityDescription; }
-        public int getCommodityValue() { return commodityValue; }
+        public String getCommodityValue() { return "￥" + commodityValue; }
         public String getCommodityClass() { return commodityClass; }
         public String getCommodityImage() { return commodityImage; }
         public String getBuyerId() { return buyerId; }

@@ -57,8 +57,8 @@ public class SearchCommodityResponse {
             return commodityDescription;
         }
 
-        public Double getCommodityValue() {
-            return commodityValue;
+        public String getCommodityValue() {
+            return "￥" + commodityValue;
         }
 
         public String getCommodityImage() {

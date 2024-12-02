@@ -59,8 +59,8 @@ public class GetHistoryResponse {
             return commodityDescription;
         }
 
-        public Double getCommodityValue() {
-            return commodityValue;
+        public String getCommodityValue() {
+            return "￥" + commodityValue;
         }
 
         public String getCommodityClass() {
