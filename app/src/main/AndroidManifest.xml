@@ -7,15 +7,15 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
         tools:ignore="SelectedPhotoAccess" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
         tools:ignore="ScopedStorage" />
-
-
-
 
     <application
         android:allowBackup="true"
@@ -28,6 +28,9 @@
         android:theme="@style/Theme.AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name="Login.GongYueActivity"
+            android:exported="false" />
         <activity
             android:name="Profile.CreateUserInfoActivity"
             android:exported="false" />
@@ -82,13 +85,17 @@
         <activity
             android:name="Main.SortActivity"
             android:exported="true" />
-        <activity android:name="Profile.SellActivity"
+        <activity
+            android:name="Profile.SellActivity"
             android:exported="true" />
-        <activity android:name="Profile.BuyActivity"
+        <activity
+            android:name="Profile.BuyActivity"
             android:exported="true" />
-        <activity android:name="Profile.ReleaseActivity"
+        <activity
+            android:name="Profile.ReleaseActivity"
             android:exported="true" />
-        <activity android:name="Profile.EvaluateActivity"
+        <activity
+            android:name="Profile.EvaluateActivity"
             android:exported="true" />
         <activity
             android:name="Login.LoginActivity"

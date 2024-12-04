@@ -9,14 +9,20 @@ public class MessageLan {
     private String name;
     private String otherId;
     private String commodityId;
+    private boolean redDotIsVisible;
 
-    public MessageLan(Uri uri, String messageText, Uri commodityImage, String name, String otherId, String commodityId) {
+    public MessageLan(Uri uri, String messageText, Uri commodityImage, String name, String otherId, String commodityId, boolean redDotIsVisible) {
         this.avatar = uri;
         this.messageText = messageText;
         this.name = name;
         this.commodityImage = commodityImage;
         this.otherId = otherId;
         this.commodityId = commodityId;
+        this.redDotIsVisible = redDotIsVisible;
+    }
+
+    public boolean isRedDotVisible() {
+        return redDotIsVisible;
     }
 
     public String getCommodityId() {

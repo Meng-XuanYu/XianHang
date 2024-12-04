@@ -84,4 +84,8 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         this.mNavigateTabBar.onSaveInstanceState(outState);
     }
+
+    public void setRedDotVisibility(String tag, boolean visible) {
+        mNavigateTabBar.setRedDotVisibility(tag, visible);
+    }
 }

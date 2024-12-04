@@ -36,6 +36,8 @@ import com.example.login.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONObject;
+
+import Login.GongYueActivity;
 import RetrofitClient.RetrofitClient;
 
 import Login.LoginActivity;
@@ -92,6 +94,13 @@ public class ChangeActivity extends AppCompatActivity {
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
 
+        // 跳转到公约页面的逻辑
+        ImageView agreement = findViewById(R.id.gongyue);
+        agreement.setOnClickListener(v -> {
+            Intent intent = new Intent(ChangeActivity.this, GongYueActivity.class);
+            startActivity(intent);
+        });
+
         // 密码可见性切换
         EditText passwordEditText = findViewById(R.id.password);
         ImageButton togglePasswordVisibilityButton = findViewById(R.id.toggle_password_visibility);
@@ -118,7 +127,7 @@ public class ChangeActivity extends AppCompatActivity {
 
         // 设置复选框文本样式
         CheckBox checkBoxAgreement = findViewById(R.id.checkbox_agreement);
-        String text = "您已阅读并同意《闲航社区用户注册协议》";
+        String text = "您已阅读并同意《闲航社区公约》";
         SpannableString spannableString = new SpannableString(text);
 
         // 更改“《闲航社区用户注册协议》”的颜色
@@ -128,6 +137,8 @@ public class ChangeActivity extends AppCompatActivity {
         // 将“《闲航社区用户注册协议》”加粗
         StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
         spannableString.setSpan(boldSpan, 7, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        checkBoxAgreement.setText(spannableString);
 
         // 修改密码按钮逻辑
         Button changePasswordButton = findViewById(R.id.change_button);

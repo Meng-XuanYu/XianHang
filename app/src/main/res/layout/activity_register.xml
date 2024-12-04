@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context="Register.RegisterActivity">
 
+    <ImageView
+        android:id="@+id/gongyue"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/gongyue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/blue_bh"
+        tools:ignore="MissingConstraints" />
+
     <!-- 顶部图标 -->
     <ImageView
         android:id="@+id/logo"
@@ -85,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="您已阅读并同意《闲航社区用户注册协议》"
+        android:text="您已阅读并同意《闲航社区共约》"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/password" />

@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+        CheckBox checkBoxAgreement = findViewById(R.id.checkbox_agreement);
 
         // 查看是否已经登陆了
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
@@ -78,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         if (profileJson != null && password != null) {
             ((EditText) findViewById(R.id.password)).setText(password);
             ((EditText) findViewById(R.id.username)).setText(profileJson);
+            checkBoxAgreement.setChecked(true);
             sendLoginRequest();
         }
 
@@ -117,6 +119,13 @@ public class LoginActivity extends AppCompatActivity {
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
 
+        // 跳转到公约页面的逻辑
+        ImageView agreement = findViewById(R.id.gongyue);
+        agreement.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, GongYueActivity.class);
+            startActivity(intent);
+        });
+
         // 密码可见性切换
         EditText passwordEditText = findViewById(R.id.password);
         ImageButton togglePasswordVisibilityButton = findViewById(R.id.toggle_password_visibility);
@@ -153,8 +162,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // 设置复选框文本样式
-        CheckBox checkBoxAgreement = findViewById(R.id.checkbox_agreement);
-        String text = "您已阅读并同意《闲航社区用户服务协议》";
+        String text = "您已阅读并同意《闲航社区公约》";
         SpannableString spannableString = new SpannableString(text);
         // 更改“《闲航社区用户服务协议》”的颜色
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_bh, null));

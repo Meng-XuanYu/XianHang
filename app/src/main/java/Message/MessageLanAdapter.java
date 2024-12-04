@@ -45,6 +45,11 @@ public class MessageLanAdapter extends RecyclerView.Adapter<MessageLanAdapter.Me
                 .error(R.drawable.xianhang_light_yuan).into(holder.commodityImage);
         holder.name.setText(messageLan.getName());
         holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(messageLan));
+        if (messageLan.isRedDotVisible()) {
+            holder.redDot.setVisibility(View.VISIBLE);
+        } else {
+            holder.redDot.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -57,6 +62,7 @@ public class MessageLanAdapter extends RecyclerView.Adapter<MessageLanAdapter.Me
         TextView messageText;
         ImageView commodityImage;
         TextView name;
+        ImageView redDot;
 
         public MessageLanViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +70,7 @@ public class MessageLanAdapter extends RecyclerView.Adapter<MessageLanAdapter.Me
             messageText = itemView.findViewById(R.id.message_text);
             commodityImage = itemView.findViewById(R.id.commodity_image);
             name = itemView.findViewById(R.id.name);
+            redDot = itemView.findViewById(R.id.red_dot);
         }
     }
 
