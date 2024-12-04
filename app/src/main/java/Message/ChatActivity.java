@@ -116,6 +116,8 @@ public class ChatActivity extends AppCompatActivity {
         // 点到图片进入商品详情
         findViewById(R.id.shangpin).setOnClickListener(v -> {
             Intent intent = new Intent(ChatActivity.this, ItemDetailActivity.class);
+            int commodityId = Integer.parseInt(this.commodityId);
+            intent.putExtra("commodityId", commodityId);
             startActivity(intent);
         });
     }
