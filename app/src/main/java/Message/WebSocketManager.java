@@ -15,7 +15,7 @@ import okhttp3.WebSocketListener;
 public class WebSocketManager {
 
     private static WebSocket webSocket;
-    private static final String BASE_URL = "ws://10.192.220.224:8000/ws/chat/";
+    private static final String BASE_URL = "ws://10.192.171.208:8000/ws/chat/";
 
     public static void connectWebSocketChat(String chatId, ChatActivity chatActivity) {
         OkHttpClient client = new OkHttpClient.Builder()

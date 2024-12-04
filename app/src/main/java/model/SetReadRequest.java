@@ -1,9 +1,9 @@
 package model;
 
 public class SetReadRequest {
-    private String userId;
+    private String chatId;
 
-    public SetReadRequest(String userId) {
-        this.userId = userId;
+    public SetReadRequest(String chatId) {
+        this.chatId = chatId;
     }
 }

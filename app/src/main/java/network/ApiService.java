@@ -112,6 +112,9 @@ public interface ApiService {
     Call<GetSingleTradeResponse> getSingleTrade(@Query("tradeId") String tradeId);
 
 
+    @GET("getSellerTradeComment/")
+    Call<GetSellerTradeCommentResponse> getSellerTradeComment(@Query("userId") String userId);
+
     @POST("commentTrade/")
     Call<CommentTradeResponse> commentTrade(@Body CommentTradeRequest commentTradeRequest);
     @GET("getTradeComment/")

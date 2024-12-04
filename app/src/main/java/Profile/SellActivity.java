@@ -66,11 +66,11 @@ public class SellActivity extends AppCompatActivity {
             finish();
         });
 
-        getMyEvaluate();
+        getMySell();
 
     }
 
-    private void getMyEvaluate() {
+    private void getMySell() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
 

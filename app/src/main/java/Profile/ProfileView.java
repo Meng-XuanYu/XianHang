@@ -1,5 +1,6 @@
 package Profile;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,7 +36,10 @@ import RetrofitClient.RetrofitClient;
 import Search.SearchDetailActivity;
 import goodsPage.ItemDetailActivity;
 import model.GetAttractivenessResponse;
+import model.GetCommodityCommentResponse;
+import model.GetMySellResponse;
 import model.GetProfileResponse;
+import model.GetSellerTradeCommentResponse;
 import network.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,6 +53,9 @@ public class ProfileView extends AppCompatActivity {
 
     private TextView textSelling, textReviews;
     private ScrollView scrollView, contentSelling, contentReviews;
+
+    private List<GetMySellResponse.Trade> trades;
+
     private List<String> items = Arrays.asList(
             "商品标题1", "￥1000", "用户1", "4.5", "商品标题1", "￥1000", "用户1", "4.5", "商品标题1",
             "￥1000", "用户1", "4.5", "商品标题1", "￥1000", "用户1", "4.5"
@@ -63,6 +70,8 @@ public class ProfileView extends AppCompatActivity {
     private TextView credit;
     private TextView jianjie;
     private TextView school;
+    private String userId;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +98,9 @@ public class ProfileView extends AppCompatActivity {
         credit = findViewById(R.id.credit_level);
         jianjie = findViewById(R.id.signature);
         school = findViewById(R.id.address);
-        
-        String userId = getIntent().getStringExtra("userId");
+        textView = findViewById(R.id.comment_sum);
+
+        userId = getIntent().getStringExtra("userId");
         if (userId == null) {
             // 加载用户信息
             loadUserProfile();
@@ -105,8 +115,8 @@ public class ProfileView extends AppCompatActivity {
             item_show1 = findViewById(R.id.d_item_show1);
             item_show2 = findViewById(R.id.d_item_show2);
 
-            generateLayout(this, items);
-            generateComments(this, null);
+            getOtherSell();
+            getComments();
 
             contentReviews.setVisibility(View.GONE);
 
@@ -148,9 +158,8 @@ public class ProfileView extends AppCompatActivity {
             item_show1 = findViewById(R.id.d_item_show1);
             item_show2 = findViewById(R.id.d_item_show2);
 
-            generateLayout(this, items);
-            generateComments(this, null);
-
+            getOtherSell();
+            getComments();
             contentReviews.setVisibility(View.GONE);
 
             editText = findViewById(R.id.searchEditText);
@@ -175,7 +184,93 @@ public class ProfileView extends AppCompatActivity {
             findViewById(R.id.button_setting).setVisibility(View.GONE);
         }
     }
-    
+
+    private void getComments() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String profileJson = sharedPreferences.getString("userProfile", null);
+        Gson gson = new Gson();
+        GetProfileResponse profile = gson.fromJson(profileJson, GetProfileResponse.class);
+
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.getSellerTradeComment(userId).enqueue(new Callback<GetSellerTradeCommentResponse>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(Call<GetSellerTradeCommentResponse> call, Response<GetSellerTradeCommentResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetSellerTradeCommentResponse getCommodityCommentResponse = response.body();
+                    if ("success".equals(getCommodityCommentResponse.getStatus())) {
+                        textView.setText((getCommodityCommentResponse.getComments() != null ?
+                                getCommodityCommentResponse.getComments().size() : 0) + "条评论");
+                        generateComments(ProfileView.this, getCommodityCommentResponse.getComments());
+                    } else {
+                        Toast.makeText(ProfileView.this, "获取用户信息失败: " + getCommodityCommentResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(ProfileView.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("getComments", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(ProfileView.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("getComments", "Error parsing error body: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetSellerTradeCommentResponse> call, Throwable t) {
+                Toast.makeText(ProfileView.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("getComments", "Request Failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void getOtherSell() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+
+        ApiService apiService = RetrofitClient.getApiService();
+
+        // 发送 POST 请求
+        apiService.getMySell(userId).enqueue(new Callback<GetMySellResponse>() {
+            @Override
+            public void onResponse(Call<GetMySellResponse> call, Response<GetMySellResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetMySellResponse getMySellResponse = response.body();
+                    if ("success".equals(getMySellResponse.getStatus())) {
+                        trades = getMySellResponse.getTrades();
+                        generateLayout(ProfileView.this, trades);
+                    } else {
+                        // 登录失败
+                        Toast.makeText(ProfileView.this, "getMySellResponse.getMessage()", Toast.LENGTH_SHORT).show();
+                        Log.e("ProfileView", "Error: " + "getMySellResponse.getMessage()");
+                    }
+                } else {
+                    try {
+                        // 从 errorBody 获取错误信息
+                        String errorJson = response.errorBody().string();
+                        JSONObject errorObject = new JSONObject(errorJson);
+                        String errorMessage = errorObject.optString("message", "未知错误");
+                        Toast.makeText(ProfileView.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        Log.e("ProfileView", "Error: " + errorMessage);
+                    } catch (Exception e) {
+                        Toast.makeText(ProfileView.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                        Log.e("ProfileView", "Error parsing error body: ", e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetMySellResponse> call, Throwable t) {
+                Toast.makeText(ProfileView.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("ProfileView", "Request Failed: " + t.getMessage());
+            }
+        });
+    }
+
     private void loadOtherCredit(String userId) {
         ApiService apiService = RetrofitClient.getApiService();
 
@@ -213,7 +308,7 @@ public class ProfileView extends AppCompatActivity {
             }
         });
     }
-    
+
     private void loadOtherUserProfile(String userId) {
         ApiService apiService = RetrofitClient.getApiService();
 
@@ -268,6 +363,7 @@ public class ProfileView extends AppCompatActivity {
     private void loadUserProfile() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String profileJson = sharedPreferences.getString("userProfile", null);
+        userId = sharedPreferences.getString("userId", null);
         float creditLevel = sharedPreferences.getFloat("userAttractiveness", 0);
         int creditInt = (int) creditLevel;
         String creditStr = "航力值:" + creditInt;
@@ -334,9 +430,12 @@ public class ProfileView extends AppCompatActivity {
         textReviews.setPaintFlags(textReviews.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
     }
 
-    private void generateLayout(Context context, List<String> items) {
+    private void generateLayout(Context context, List<GetMySellResponse.Trade> items) {
         contentReviews.setVisibility(View.GONE);
-        for (String item : items) {
+        if (items == null) {
+            return;
+        }
+        for (GetMySellResponse.Trade item : items) {
             LinearLayout itemLayout = new LinearLayout(context);
             itemLayout.setOrientation(LinearLayout.VERTICAL);
             itemLayout.setBackgroundResource(R.color.white);
@@ -356,7 +455,10 @@ public class ProfileView extends AppCompatActivity {
             roundedImageView.setAdjustViewBounds(true);
             roundedImageView.setBackgroundResource(R.drawable.img);
             roundedImageView.setScaleType(ImageView.ScaleType.FIT_START);
-            roundedImageView.setImageResource(img.get(items.indexOf(item) % 2));
+            Glide.with(context)
+                    .load(item.getCommodityImage())
+                    .placeholder(R.drawable.img)  // 占位图
+                    .error(R.drawable.img).into(roundedImageView);
             roundedImageView.setCornerRadius(dpToPx(context, 10), dpToPx(context, 10), 0, 0);
             itemLayout.addView(roundedImageView);
 
@@ -367,7 +469,7 @@ public class ProfileView extends AppCompatActivity {
             );
             textviewParams1.setMargins(dpToPx(context, 10), dpToPx(context, 10), 0, dpToPx(context, 5));
             textView1.setLayoutParams(textviewParams1);
-            textView1.setText("商品标题 1111111111");
+            textView1.setText(item.getCommodityDescription());
             textView1.setSingleLine(true);
             textView1.setTextSize(15);
             textView1.setTextColor(Color.BLACK);
@@ -380,16 +482,18 @@ public class ProfileView extends AppCompatActivity {
             );
             textviewParams2.setMargins(dpToPx(context, 10), 0, 0, dpToPx(context, 15));
             textView2.setLayoutParams(textviewParams2);
-            textView2.setText("￥1111");
+            textView2.setText(String.valueOf(item.getCommodityValue()));
             textView2.setTextSize(18);
             textView2.setTypeface(null, Typeface.BOLD);
             textView2.setTextColor(Color.parseColor("#fd424b"));
             itemLayout.addView(textView2);
 
+            final int temp = Integer.parseInt(item.getCommodityId());
             itemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(ProfileView.this, ItemDetailActivity.class);
+                    intent.putExtra("commodityId", temp);
                     startActivity(intent);
                 }
             });
@@ -402,8 +506,11 @@ public class ProfileView extends AppCompatActivity {
         }
     }
 
-    private void generateComments(Context context, List<String> comments) {
-        for (int i = 0; i < 5; i++) {
+    private void generateComments(Context context, List<GetSellerTradeCommentResponse.CommentData> comments) {
+        if (comments == null) {
+            return;
+        }
+        for (GetSellerTradeCommentResponse.CommentData comment1 : comments) {
             LinearLayout layout1 = new LinearLayout(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -418,7 +525,10 @@ public class ProfileView extends AppCompatActivity {
             );
             roundedImageView.setLayoutParams(imageParams1);
             roundedImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            roundedImageView.setImageResource(R.drawable.item1);
+            Glide.with(context)
+                    .load(comment1.getBuyerImage())
+                    .placeholder(R.drawable.img)  // 占位图
+                    .error(R.drawable.img).into(roundedImageView);
             roundedImageView.setCornerRadius(dpToPx(context, 17));
             layout1.addView(roundedImageView);
 
@@ -448,7 +558,7 @@ public class ProfileView extends AppCompatActivity {
             params3.setMargins(0, dpToPx(context, 1), 0, 0);
             textView.setLayoutParams(params3);
             textView.setTextColor(Color.parseColor("#939393"));
-            textView.setText("用户名");
+            textView.setText(comment1.getBuyerName());
             textView.setTextSize(16);
             textView.setTypeface(Typeface.DEFAULT_BOLD);
             layout3.addView(textView);
@@ -461,7 +571,7 @@ public class ProfileView extends AppCompatActivity {
             params4.setMargins(dpToPx(context, 6), 0, 0, 0);
             textview1.setLayoutParams(params4);
             textview1.setTextColor(Color.parseColor("#939393"));
-            textview1.setText("校区：北京航空航天大学  学院路校区");
+            textview1.setText(comment1.getBuyerSchool());
             textview1.setPadding(dpToPx(context, 4), 0, dpToPx(context, 2), 0);
             textview1.setTextSize(13);
             textview1.setBackgroundResource(R.drawable.user_pos_bg);
@@ -476,20 +586,11 @@ public class ProfileView extends AppCompatActivity {
             params5.setMargins(dpToPx(context, 10), dpToPx(context, 2), dpToPx(context, 40), 0);
             textview2.setLayoutParams(params5);
             textview2.setTextColor(Color.BLACK);
-            textview2.setText("11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+            textview2.setText(comment1.getBuyerComment());
             textview2.setTextSize(16);
             layout2.addView(textview2);
 
-            TextView textview3 = new TextView(context);
-            LinearLayout.LayoutParams params6 = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params6.setMargins(dpToPx(context, 10), dpToPx(context, 5), 0, 0);
-            textview3.setLayoutParams(params6);
-            textview3.setTextColor(Color.parseColor("#939393"));
-            textview3.setText("2024-11-15 16:33:31");
-            layout2.addView(textview3);
+
             user_comments.addView(layout1);
         }
     }

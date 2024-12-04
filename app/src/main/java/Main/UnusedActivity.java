@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -149,13 +150,13 @@ public class UnusedActivity extends AppCompatActivity {
         //userid部分
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
-        RequestBody userIdBody = RequestBody.create(userId, okhttp3.MultipartBody.FORM);
+        RequestBody userIdBody = RequestBody.create(userId, MultipartBody.FORM);
 
         // 商品文本信息
-        RequestBody nameBody = RequestBody.create(name, okhttp3.MultipartBody.FORM);
-        RequestBody descriptionBody = RequestBody.create(description, okhttp3.MultipartBody.FORM);
-        RequestBody priceBody = RequestBody.create(price, okhttp3.MultipartBody.FORM);
-        RequestBody sortBody = RequestBody.create(sort, okhttp3.MultipartBody.FORM);
+        RequestBody nameBody = RequestBody.create(name, MultipartBody.FORM);
+        RequestBody descriptionBody = RequestBody.create(description, MultipartBody.FORM);
+        RequestBody priceBody = RequestBody.create(price, MultipartBody.FORM);
+        RequestBody sortBody = RequestBody.create(sort, MultipartBody.FORM);
 
         // 商品图片信息
         // 第一张图片
@@ -280,6 +281,7 @@ public class UnusedActivity extends AppCompatActivity {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(R.layout.bottom_price);
         et_input = bottomSheetDialog.findViewById(R.id.et_input);
+
         StringBuilder price1 = new StringBuilder(et_input.getText());
         if(!price1.toString().isEmpty()){
             price1.delete(1,1);
@@ -396,12 +398,9 @@ public class UnusedActivity extends AppCompatActivity {
         });
         btn_delete.setOnClickListener(v->{
             if(!et_input.hasFocus())return;
-            int cursorPosition = et_input.getSelectionStart()-1;
-            if(et_input.getSelectionStart() == et_input.getText().toString().length()){
-                et_input.setText(et_input.getText().toString().substring(0,cursorPosition));
-                et_input.setSelection(cursorPosition);
-            }else {
-                editableText.delete(cursorPosition,cursorPosition+1);
+            int cursorPosition = et_input.getSelectionStart();
+            if (cursorPosition > 0) {
+                editableText.delete(cursorPosition - 1, cursorPosition);
             }
 
         });

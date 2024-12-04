@@ -235,6 +235,10 @@ public class ItemDetailActivity extends AppCompatActivity {
                     GetOrCreateChatResponse getOrCreateChatResponse = response.body();
                     Intent intent = new Intent(ItemDetailActivity.this, ChatActivity.class);
                     intent.putExtra("chatId", getOrCreateChatResponse.getChatId());
+                    intent.putExtra("commodityId", commodityId);
+                    intent.putExtra("otherAvatar", commodity.getSellerImage());
+                    intent.putExtra("otherId", receiverId);
+                    intent.putExtra("otherName", commodity.getSellerName());
                     startActivity(intent);
                 } else {
                     try {

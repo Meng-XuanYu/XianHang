@@ -52,39 +52,11 @@ public class MessageFragment extends Fragment {
         button_brush = view.findViewById(R.id.button_brush);
         button_brush.setOnClickListener(v -> {
             // 将所有未读消息设为已读
-            setAllRead();
         });
 
         generateMessageLanList();
 
         return view;
-    }
-
-    private void setAllRead() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String userId = sharedPreferences.getString("userId", null);
-        SetReadRequest request = new SetReadRequest(userId);
-        ApiService apiService = RetrofitClient.getApiService();
-        apiService.setRead(request).enqueue(new Callback<SetReadResponse>() {
-            @Override
-            public void onResponse(Call<SetReadResponse> call, Response<SetReadResponse> response) {
-                if (response.isSuccessful()) {
-                    messageLanList.clear();
-                    chatId.clear();
-                    generateMessageLanList();
-                    // 隐藏红点
-                    ((MainActivity) requireActivity()).setRedDotVisibility("消息", false);
-                    Toast.makeText(getContext(), "已将所有未读消息设为已读", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "设置失败", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SetReadResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "设置失败", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void generateMessageLanList() {
@@ -104,8 +76,7 @@ public class MessageFragment extends Fragment {
                         for (GetChatListResponse.Chat chat : chatList) {
                             Uri uri = Uri.parse(chat.getOtherAvatar());
                             Uri commodityUri = Uri.parse(chat.getCommodityImage());
-                            boolean isRead = chat.getLatestMessageStatus().equals("read");
-                            MessageLan messageLan = new MessageLan(uri, chat.getLatestMessageContent(), commodityUri, chat.getOtherName(), chat.getOtherId(userId), chat.getCommodityId(), isRead);
+                            MessageLan messageLan = new MessageLan(uri, chat.getLatestMessageContent(), commodityUri, chat.getOtherName(), chat.getOtherId(userId), chat.getCommodityId(), true);
                             messageLanList.add(messageLan);
                             chatId.put(messageLan, chat.getChatId());
                         }
