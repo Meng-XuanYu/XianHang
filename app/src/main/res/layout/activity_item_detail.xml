@@ -225,7 +225,7 @@
 
                     <LinearLayout
                         android:id="@+id/comment_layout"
-                        android:layout_width="300dp"
+                        android:layout_width="280dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/user_img2"
@@ -252,6 +252,7 @@
                         android:layout_height="35dp"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="5dp"
+                        android:layout_centerVertical="true"
                         android:layout_toEndOf="@+id/comment_layout"
                         android:contentDescription="发送"
                         android:scaleType="fitCenter"

@@ -39,9 +39,10 @@ import retrofit2.Response;
 
 public class MessageFragment extends Fragment {
     private List<MessageLan> messageLanList = new ArrayList<>();
-    private HashMap<MessageLan, String> chatId = new HashMap<>();
+    private HashMap<MessageLan, String> chatIds = new HashMap<>();
     private RecyclerView recyclerView;
     private ImageButton button_brush;
+    private MessageLanAdapter adapter;
 
     @Nullable
     @Override
@@ -52,6 +53,31 @@ public class MessageFragment extends Fragment {
         button_brush = view.findViewById(R.id.button_brush);
         button_brush.setOnClickListener(v -> {
             // 将所有未读消息设为已读
+            for (MessageLan messageLan : chatIds.keySet()) {
+                String chatId = chatIds.get(messageLan);
+                if (messageLan.isRedDotVisible()) {
+                    ApiService apiService = RetrofitClient.getApiService();
+                    SetReadRequest request = new SetReadRequest(chatId);
+                    apiService.setRead(request).enqueue(new Callback<SetReadResponse>() {
+                        @Override
+                        public void onResponse(Call<SetReadResponse> call, Response<SetReadResponse> response) {
+                            if (response.isSuccessful()) {
+
+                            } else {
+                                Toast.makeText(getContext(), "设为已读失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SetReadResponse> call, Throwable t) {
+                            Toast.makeText(getContext(), "设为已读失败send", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+            chatIds.clear();
+            messageLanList.clear();
+            generateMessageLanList();
         });
 
         generateMessageLanList();
@@ -76,20 +102,25 @@ public class MessageFragment extends Fragment {
                         for (GetChatListResponse.Chat chat : chatList) {
                             Uri uri = Uri.parse(chat.getOtherAvatar());
                             Uri commodityUri = Uri.parse(chat.getCommodityImage());
-                            MessageLan messageLan = new MessageLan(uri, chat.getLatestMessageContent(), commodityUri, chat.getOtherName(), chat.getOtherId(userId), chat.getCommodityId(), true);
+                            boolean isRead = chat.getLatestMessageStatus().equals("read");
+                            MessageLan messageLan = new MessageLan(uri, chat.getLatestMessageContent(), commodityUri, chat.getOtherName(), chat.getOtherId(userId), chat.getCommodityId(), !isRead);
                             messageLanList.add(messageLan);
-                            chatId.put(messageLan, chat.getChatId());
+                            chatIds.put(messageLan, chat.getChatId());
                         }
                     }
-                    MessageLanAdapter adapter = new MessageLanAdapter(messageLanList, messageLan -> {
+                    adapter = new MessageLanAdapter(messageLanList, messageLan -> {
                         Intent intent = new Intent(getActivity(), ChatActivity.class);
-                        intent.putExtra("chatId", chatId.get(messageLan));
+                        intent.putExtra("chatId", chatIds.get(messageLan));
                         intent.putExtra("otherAvatar", messageLan.getAvatar().toString());
                         intent.putExtra("otherId", messageLan.getOtherId());
                         intent.putExtra("commodityId", messageLan.getCommodityId());
                         intent.putExtra("otherName", messageLan.getName());
+                        if (messageLan.isRedDotVisible()) {
+                            intent.putExtra("needToBeSetRead", "true");
+                        }
                         startActivity(intent);
                     });
+
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(getContext(), "获取消息列表失败", Toast.LENGTH_SHORT).show();

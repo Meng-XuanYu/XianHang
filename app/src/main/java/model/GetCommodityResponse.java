@@ -35,6 +35,11 @@ public class GetCommodityResponse {
 
         private String sellerName;
         private String sellerImage;
+        private String currentTradeId;
+
+        public String getCurrentTradeId() {
+            return currentTradeId;
+        }
 
         public String getSchool() {
             return school;

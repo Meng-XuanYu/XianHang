@@ -1,17 +1,37 @@
 package Main;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.login.R;
+
+import java.util.List;
+
+import Message.ChatActivity;
+import Message.MessageLan;
+import Message.MessageLanAdapter;
+import Message.WebSocketManager;
+import RetrofitClient.RetrofitClient;
+import model.GetChatListRequest;
+import model.GetChatListResponse;
+import network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import widgets.NavigateTabBar;
 
 
@@ -29,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
+        // Register the receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(refreshReceiver, new IntentFilter("ACTION_REFRESH_FRAGMENT"));
+
         // 沉浸式体验
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_FULLSCREEN |
@@ -47,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         this.mNavigateTabBar.addTab(fragment.MessageFragment.class, new NavigateTabBar.TabParam(R.drawable.message, R.drawable.message_filled, TAG_PAGE_MESSAGE));
         this.mNavigateTabBar.addTab(fragment.PersonFragment.class, new NavigateTabBar.TabParam(R.drawable.profile, R.drawable.profile_filled, TAG_PAGE_PERSON));
 
-        mNavigateTabBar.setRedDotVisibility(TAG_PAGE_MESSAGE, true);
+        mNavigateTabBar.setRedDotVisibility(TAG_PAGE_MESSAGE, false);
         // 点击发布按钮
         this.mTabMoreIv.setOnClickListener(v -> PopMenuView.getInstance().show(MainActivity.this, mTabMoreIv, this));
 
@@ -60,6 +83,37 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     finish();
                 }
+            }
+        });
+
+        connect();
+    }
+
+    private void connect() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+        GetChatListRequest request = new GetChatListRequest(userId);
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.getChatList(request).enqueue(new Callback<GetChatListResponse>() {
+            @Override
+            public void onResponse(Call<GetChatListResponse> call, Response<GetChatListResponse> response) {
+                if (response.isSuccessful()) {
+                    List<GetChatListResponse.Chat> chatList = null;
+                    if (response.body() != null) {
+                        chatList = response.body().getChatList();
+                    }
+                    if (chatList != null) {
+                        for (GetChatListResponse.Chat chat : chatList) {
+                            WebSocketManager.connectWebSocketMain(chat.getChatId(), MainActivity.this);
+                        }
+                    }
+
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetChatListResponse> call, Throwable t) {
             }
         });
     }
@@ -87,5 +141,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void setRedDotVisibility(String tag, boolean visible) {
         mNavigateTabBar.setRedDotVisibility(tag, visible);
+    }
+
+    public void refreshFragment() {
+        mNavigateTabBar.refreshMessageFragment();
+    }
+
+    private BroadcastReceiver refreshReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("ACTION_REFRESH_FRAGMENT".equals(intent.getAction())) {
+                refreshFragment();
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unregister the receiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(refreshReceiver);
+    }
+
+    public String getUserId() {
+        return getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("userId", null);
     }
 }

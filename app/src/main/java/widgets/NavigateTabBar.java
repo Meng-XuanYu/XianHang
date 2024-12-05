@@ -105,6 +105,10 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         }
     }
 
+    public void refreshMessageFragment() {
+        setCurrentSelectedTab(2);
+    }
+
     public void addTab(Class frameLayoutClass, TabParam tabParam) {
         int defaultLayout = R.layout.view_navigate_tabbar;
 
@@ -201,28 +205,11 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         FragmentTransaction transaction = this.mFragmentActivity.getSupportFragmentManager().beginTransaction();
         setCurrSelectedTabByTag(holder.tag);
 
-        // Always create a new instance of the fragment
+        // 始终创建Fragment的新实例
         Fragment fragment = getFragmentInstance(holder.tag);
         transaction.replace(this.mMainContentLayoutId, fragment, holder.tag);
-        transaction.commit();
+        transaction.commitAllowingStateLoss(); // 使用commitAllowingStateLoss()代替commit()
         this.mCurrentSelectedTab = holder.tabIndex;
-    }
-
-    private boolean isFragmentShown(FragmentTransaction transaction, String newTag) {
-        if (TextUtils.equals(newTag, this.mCurrentTag)) {
-            return true;
-        }
-
-        if (TextUtils.isEmpty(this.mCurrentTag)) {
-            return false;
-        }
-
-        Fragment fragment = this.mFragmentActivity.getSupportFragmentManager().findFragmentByTag(this.mCurrentTag);
-        if (fragment != null && !fragment.isHidden()) {
-            transaction.hide(fragment);
-        }
-
-        return false;
     }
 
     private void setCurrSelectedTabByTag(String tag) {
@@ -343,6 +330,10 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         outState.putString(KEY_CURRENT_TAG, this.mCurrentTag);
     }
 
+    public Fragment getFragmentByTag(String tag) {
+        return this.mFragmentActivity.getSupportFragmentManager().findFragmentByTag(tag);
+    }
+
     /**
      * ViewHolder
      */
@@ -367,26 +358,12 @@ public class NavigateTabBar extends LinearLayout implements View.OnClickListener
         //        public int tabViewResId;
         public String title;
 
-        /**
-         * 构造方法
-         *
-         * @param iconResId
-         * @param iconSelectedResId
-         * @param title
-         */
         public TabParam(int iconResId, int iconSelectedResId, String title) {
             this.iconResId = iconResId;
             this.iconSelectedResId = iconSelectedResId;
             this.title = title;
         }
 
-        /**
-         * 构造方法
-         *
-         * @param iconResId
-         * @param iconSelectedResId
-         * @param titleStringRes
-         */
         public TabParam(int iconResId, int iconSelectedResId, int titleStringRes) {
             this.iconResId = iconResId;
             this.iconSelectedResId = iconSelectedResId;

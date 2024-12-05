@@ -37,6 +37,7 @@ import Search.SearchDetailActivity;
 import goodsPage.ItemDetailActivity;
 import model.GetAttractivenessResponse;
 import model.GetCommodityCommentResponse;
+import model.GetMyPublishResponse;
 import model.GetMySellResponse;
 import model.GetProfileResponse;
 import model.GetSellerTradeCommentResponse;
@@ -54,7 +55,7 @@ public class ProfileView extends AppCompatActivity {
     private TextView textSelling, textReviews;
     private ScrollView scrollView, contentSelling, contentReviews;
 
-    private List<GetMySellResponse.Trade> trades;
+    private List<GetMyPublishResponse.Commodity> trades;
 
     private List<String> items = Arrays.asList(
             "商品标题1", "￥1000", "用户1", "4.5", "商品标题1", "￥1000", "用户1", "4.5", "商品标题1",
@@ -229,19 +230,16 @@ public class ProfileView extends AppCompatActivity {
     }
 
     private void getOtherSell() {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String userId = sharedPreferences.getString("userId", null);
-
         ApiService apiService = RetrofitClient.getApiService();
 
         // 发送 POST 请求
-        apiService.getMySell(userId).enqueue(new Callback<GetMySellResponse>() {
+        apiService.getMyPublish(userId).enqueue(new Callback<GetMyPublishResponse>() {
             @Override
-            public void onResponse(Call<GetMySellResponse> call, Response<GetMySellResponse> response) {
+            public void onResponse(Call<GetMyPublishResponse> call, Response<GetMyPublishResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    GetMySellResponse getMySellResponse = response.body();
+                    GetMyPublishResponse getMySellResponse = response.body();
                     if ("success".equals(getMySellResponse.getStatus())) {
-                        trades = getMySellResponse.getTrades();
+                        trades = getMySellResponse.getCommodities();
                         generateLayout(ProfileView.this, trades);
                     } else {
                         // 登录失败
@@ -264,7 +262,7 @@ public class ProfileView extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<GetMySellResponse> call, Throwable t) {
+            public void onFailure(Call<GetMyPublishResponse> call, Throwable t) {
                 Toast.makeText(ProfileView.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("ProfileView", "Request Failed: " + t.getMessage());
             }
@@ -430,12 +428,12 @@ public class ProfileView extends AppCompatActivity {
         textReviews.setPaintFlags(textReviews.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
     }
 
-    private void generateLayout(Context context, List<GetMySellResponse.Trade> items) {
+    private void generateLayout(Context context, List<GetMyPublishResponse.Commodity> items) {
         contentReviews.setVisibility(View.GONE);
         if (items == null) {
             return;
         }
-        for (GetMySellResponse.Trade item : items) {
+        for (GetMyPublishResponse.Commodity item : items) {
             LinearLayout itemLayout = new LinearLayout(context);
             itemLayout.setOrientation(LinearLayout.VERTICAL);
             itemLayout.setBackgroundResource(R.color.white);

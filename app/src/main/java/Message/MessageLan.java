@@ -48,4 +48,8 @@ public class MessageLan {
     public Uri getCommodityImage() {
         return commodityImage;
     }
+
+    public void setRedDotVisible(boolean b) {
+        redDotIsVisible = b;
+    }
 }
