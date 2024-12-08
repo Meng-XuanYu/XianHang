@@ -68,11 +68,11 @@ public class SortActivity extends AppCompatActivity {
         item_show2 = findViewById(R.id.d_item_show2);
         search_layout = findViewById(R.id.search_layout);
         // 沉浸式体验
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
+//        getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_FULLSCREEN |
+//                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//        );
 
         search_layout.setOnClickListener(view -> {
             Intent intent = new Intent(SortActivity.this, SearchDetailActivity.class);

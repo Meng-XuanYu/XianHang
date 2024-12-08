@@ -88,11 +88,11 @@ public class ChangeActivity extends AppCompatActivity {
                 .into(bottomImage);
 
         // 沉浸式体验
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
+//        getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_FULLSCREEN |
+//                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//        );
 
         // 跳转到公约页面的逻辑
         ImageView agreement = findViewById(R.id.gongyue);

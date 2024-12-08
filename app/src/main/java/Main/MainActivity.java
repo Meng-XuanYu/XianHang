@@ -53,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(refreshReceiver, new IntentFilter("ACTION_REFRESH_FRAGMENT"));
 
         // 沉浸式体验
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
+//        getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_FULLSCREEN |
+//                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//        );
 
         this.mNavigateTabBar = findViewById(R.id.main_tabbar);
         this.mTabMoreIv = findViewById(R.id.tab_more_iv);

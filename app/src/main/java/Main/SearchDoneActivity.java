@@ -61,11 +61,11 @@ public class SearchDoneActivity extends AppCompatActivity {
         searchText = getIntent().getStringExtra("text");
         aiSearchText = getIntent().getStringExtra("ai_text");
         // 沉浸式体验
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
+//        getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_FULLSCREEN |
+//                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//        );
 
         item_show1 = findViewById(R.id.d_item_show1);
         item_show2 = findViewById(R.id.d_item_show2);
