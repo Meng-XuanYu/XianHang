@@ -138,4 +138,17 @@ public interface ApiService {
     Call<GetOrCreateChatResponse> getOrCreateChat(@Body GetOrCreateChatRequest request);
     @POST("deleteChat/")
     Call<DeleteChatResponse> deleteChat(@Body DeleteChatRequest request);
+    @Multipart
+    @POST("editCommodity/")
+    Call<EditCommodityResponse> editCommodity(
+            @Part("commodityId") RequestBody commodityId,
+            @Part("commodityName") RequestBody commodityName,
+            @Part("commodityDescription") RequestBody commodityDescription,
+            @Part("commodityValue") RequestBody commodityValue,
+            @Part("commodityKeywords") RequestBody commodityKeywords,
+            @Part("commodityClass") RequestBody commodityClass,
+            @Part List<MultipartBody.Part> image
+    );
+    @POST("deleteCommodity/")
+    Call<DeleteCommodityResponse> deleteCommodity(@Body DeleteCommodityRequest request);
 }

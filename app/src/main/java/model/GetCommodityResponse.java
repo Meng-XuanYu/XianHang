@@ -30,7 +30,14 @@ public class GetCommodityResponse {
         private String commodityKeywords;
         private String commodityClass;
         private String commodityImage1;
-        private Map<String, String> additionalImages;
+        private String commodityImage2;
+        private String commodityImage3;
+        private String commodityImage4;
+        private String commodityImage5;
+        private String commodityImage6;
+        private String commodityImage7;
+        private String commodityImage8;
+        private String commodityImage9;
         private String school;
 
         private String sellerName;
@@ -73,6 +80,10 @@ public class GetCommodityResponse {
             return "￥"+commodityValue;
         }
 
+        public String getCommodityValueRaw() {
+            return commodityValue.toString();
+        }
+
         public String getCommodityKeywords() {
             return commodityKeywords;
         }
@@ -88,9 +99,14 @@ public class GetCommodityResponse {
         public ArrayList<String> getAdditionalImages() {
             ArrayList<String> tmp = new ArrayList<>();
             tmp.add(commodityImage1);
-            if(additionalImages!=null){
-                tmp.addAll(additionalImages.values());
-            }
+            if (commodityImage2 != null) tmp.add(commodityImage2);
+            if (commodityImage3 != null) tmp.add(commodityImage3);
+            if (commodityImage4 != null) tmp.add(commodityImage4);
+            if (commodityImage5 != null) tmp.add(commodityImage5);
+            if (commodityImage6 != null) tmp.add(commodityImage6);
+            if (commodityImage7 != null) tmp.add(commodityImage7);
+            if (commodityImage8 != null) tmp.add(commodityImage8);
+            if (commodityImage9 != null) tmp.add(commodityImage9);
             return tmp;
         }
     }

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -50,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import Main.MainActivity;
+import Main.UnusedActivity;
 import Message.ChatActivity;
 import Profile.BuyActivity;
 import RetrofitClient.RetrofitClient;
@@ -63,6 +65,8 @@ import model.AddHistoryRequest;
 import model.AddHistoryResponse;
 import model.DeleteCollectionRequest;
 import model.DeleteCollectionResponse;
+import model.DeleteCommodityRequest;
+import model.DeleteCommodityResponse;
 import model.GetCommodityCommentResponse;
 import model.GetCommodityListByClassResponse;
 import model.GetCommodityResponse;
@@ -102,6 +106,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     private GetCommodityResponse.Commodity commodity;
     private ImageView collect;
     private Button want;
+    private ImageButton delete;
+    private ImageButton edit;
 
     private List<GetCommodityListByClassResponse.Commodity> commodities;
     private List<AIRecommendResponse.Recommendation> aiCommodities;
@@ -149,6 +155,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         send = findViewById(R.id.send);
         user_img2 = findViewById(R.id.user_img2);
         want = findViewById(R.id.want);
+        delete = findViewById(R.id.delete);
+        edit = findViewById(R.id.edit);
 
         getIsCollected();
         addHistory();
@@ -183,7 +191,6 @@ public class ItemDetailActivity extends AppCompatActivity {
                 collect.setImageResource(R.drawable.collected);
                 addCollect();
             }
-
         });
 
         // 返回按钮
@@ -192,6 +199,53 @@ public class ItemDetailActivity extends AppCompatActivity {
         // 搜索按钮
         search_img.setOnClickListener(view -> {
             Intent intent = new Intent(ItemDetailActivity.this, ItemDetailActivity.class);
+            startActivity(intent);
+        });
+
+        // 删除按钮
+        delete.setOnClickListener(view -> {
+            ApiService apiService = RetrofitClient.getApiService();
+            DeleteCommodityRequest request = new DeleteCommodityRequest(id);
+            apiService.deleteCommodity(request).enqueue(new Callback<DeleteCommodityResponse>() {
+                @Override
+                public void onResponse(Call<DeleteCommodityResponse> call, Response<DeleteCommodityResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        DeleteCommodityResponse getCommodityResponse = response.body();
+                        if ("success".equals(getCommodityResponse.getStatus())) {
+                            Toast.makeText(ItemDetailActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(ItemDetailActivity.this, "获取用户信息失败: " + getCommodityResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        try {
+                            // 从 errorBody 获取错误信息
+                            String errorJson = response.errorBody().string();
+                            JSONObject errorObject = new JSONObject(errorJson);
+                            String errorMessage = errorObject.optString("message", "未知错误");
+                            Toast.makeText(ItemDetailActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            Log.e("Delete", "Error: " + errorMessage);
+                        } catch (Exception e) {
+                            Toast.makeText(ItemDetailActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                            Log.e("Delete", "Error parsing error body: ", e);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DeleteCommodityResponse> call, Throwable t) {
+                    Toast.makeText(ItemDetailActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("Delete", "Request Failed: " + t.getMessage());
+                }
+            });
+        });
+
+        // 编辑按钮
+        edit.setOnClickListener(view -> {
+            Intent intent = new Intent(ItemDetailActivity.this, UnusedActivity.class);
+            boolean isEdit = true;
+            intent.putExtra("edit", isEdit);
+            intent.putExtra("commodityId", id);
             startActivity(intent);
         });
 
@@ -448,6 +502,22 @@ public class ItemDetailActivity extends AppCompatActivity {
                                     .error(R.drawable.img).into(
                                             ((ImageView)((LinearLayout) imgs.getChildAt(index / 2)).getChildAt(index % 2))
                                             );
+                        }
+                        String sellerId = commodity.getSellerId();
+                        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                        String userId = sharedPreferences.getString("userId", null);
+                        if (userId != null && userId.equals(sellerId)) {
+                            want.setVisibility(View.GONE);
+                            delete.setVisibility(View.VISIBLE);
+                            edit.setVisibility(View.VISIBLE);
+                        } else {
+                            want.setVisibility(View.VISIBLE);
+                            delete.setVisibility(View.GONE);
+                            TextView delete = findViewById(R.id.delete_text);
+                            delete.setVisibility(View.GONE);
+                            edit.setVisibility(View.GONE);
+                            TextView edit = findViewById(R.id.edit_text);
+                            edit.setVisibility(View.GONE);
                         }
                     } else {
                         Toast.makeText(ItemDetailActivity.this, "获取用户信息失败: " + getCommodityResponse.getMessage(), Toast.LENGTH_SHORT).show();

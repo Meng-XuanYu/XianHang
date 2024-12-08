@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,8 +27,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.login.R;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -39,6 +45,9 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import model.EditCommodityRequest;
+import model.EditCommodityResponse;
+import model.GetCommodityResponse;
 import model.GetProfileResponse;
 import model.PublishCommodityResponse;
 import network.ApiService;
@@ -78,6 +87,7 @@ public class UnusedActivity extends AppCompatActivity {
     private EditText editText_name;
     private EditText editText;
     private TextView pos;
+    private Button button;
 
     private ArrayList<Uri> imageList = new ArrayList<>();
 
@@ -106,16 +116,6 @@ public class UnusedActivity extends AppCompatActivity {
         imageList = new ArrayList<>();
         imageview = findViewById(R.id.imageView);
 
-        String ai = String.valueOf(getIntent().getBooleanExtra("ai",false));
-        if(ai.equals("true")){
-            editText_name.setText(getIntent().getStringExtra("commodityName"));
-            editText.setText(getIntent().getStringExtra("commodityDescription"));
-            price.setText(getIntent().getStringExtra("commodityValue"));
-            Uri selectedImageUri = Uri.parse(getIntent().getStringExtra("commodityImage"));
-            generateImg(selectedImageUri); // 加载图片到 ImageView
-            imageList.add(selectedImageUri);
-        }
-
         // 校区
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String profileJson = sharedPreferences.getString("userProfile", null);
@@ -133,16 +133,134 @@ public class UnusedActivity extends AppCompatActivity {
         // 选择分类
         sort_arrow.setOnClickListener(v -> showBottomSheetDialog());
 
+        String ai = String.valueOf(getIntent().getBooleanExtra("ai",false));
+        String edit = String.valueOf(getIntent().getBooleanExtra("edit",false));
+        if(ai.equals("true")){
+            editText_name.setText(getIntent().getStringExtra("commodityName"));
+            editText.setText(getIntent().getStringExtra("commodityDescription"));
+            price.setText(getIntent().getStringExtra("commodityValue"));
+            Uri selectedImageUri = Uri.parse(getIntent().getStringExtra("commodityImage"));
+            generateImg(selectedImageUri); // 加载图片到 ImageView
+            imageList.add(selectedImageUri);
+        } else if (edit.equals("true")) {
+            getAllDetail();
+        }
+
         // 发布
-        Button button = findViewById(R.id.save);
-        button.setOnClickListener(v -> {
-            // 获取输入的商品信息，图片就是arraylist
-            String nameText = editText_name.getText().toString();
-            String descriptionText = editText.getText().toString();
-            String priceText = price.getText().toString();
-            String sortText = sort.getText().toString();
-            // 上传商品信息
-            publishCommodity(nameText, descriptionText, priceText, sortText, imageList);
+        button = findViewById(R.id.save);
+        if (edit.equals("true")) {
+            button.setText("修改");
+            button.setOnClickListener(v -> {
+                String commodityId = getIntent().getStringExtra("commodityId");
+                String nameText = editText_name.getText().toString();
+                String descriptionText = editText.getText().toString();
+                String priceText = price.getText().toString();
+                String sortText = sort.getText().toString();
+                editCommodity(commodityId, nameText, descriptionText, priceText, sortText, imageList);
+            });
+        } else {
+            button.setText("发布");
+            button.setOnClickListener(v -> {
+                // 获取输入的商品信息，图片就是arraylist
+                String nameText = editText_name.getText().toString();
+                String descriptionText = editText.getText().toString();
+                String priceText = price.getText().toString();
+                String sortText = sort.getText().toString();
+                // 上传商品信息
+                publishCommodity(nameText, descriptionText, priceText, sortText, imageList);
+            });
+        }
+    }
+
+    private void editCommodity(String commodityId, String name, String description, String price, String sort, ArrayList<Uri> imageList) {
+        // 商品文本信息
+        RequestBody commodityIdBody = RequestBody.create(commodityId, MultipartBody.FORM);
+        RequestBody nameBody = RequestBody.create(name, MultipartBody.FORM);
+        RequestBody descriptionBody = RequestBody.create(description, MultipartBody.FORM);
+        RequestBody priceBody = RequestBody.create(price, MultipartBody.FORM);
+        RequestBody sortBody = RequestBody.create(sort, MultipartBody.FORM);
+
+        // 商品图片信息
+        ArrayList <MultipartBody.Part> imageBodies = new ArrayList<>();
+        for (int i = 0; i < imageList.size(); i++) {
+            File file1 = new File(getRealPathFromURI(imageList.get(i)));
+            RequestBody imageFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), file1);
+            MultipartBody.Part imageBody1 = MultipartBody.Part.createFormData("image", file1.getName(), imageFile1);
+            imageBodies.add(imageBody1);
+        }
+
+        // 发起请求
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.editCommodity(commodityIdBody, nameBody, descriptionBody, priceBody, null, sortBody, imageBodies)
+                .enqueue(new Callback<EditCommodityResponse>() {
+                    @Override
+                    public void onResponse(Call<EditCommodityResponse> call, Response<EditCommodityResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            EditCommodityResponse result = response.body();
+                            if ("success".equals(result.getStatus())) {
+                                Toast.makeText(UnusedActivity.this, "修改成功！", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Toast.makeText(UnusedActivity.this, "修改失败: " + result.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(UnusedActivity.this, "修改失败，服务器返回错误", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<EditCommodityResponse> call, Throwable t) {
+                        Toast.makeText(UnusedActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void getAllDetail() {
+        String commodityId = getIntent().getStringExtra("commodityId");
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.getCommodity(commodityId).enqueue(new Callback<GetCommodityResponse>() {
+            @Override
+            public void onResponse(Call<GetCommodityResponse> call, Response<GetCommodityResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetCommodityResponse result = response.body();
+                    if ("success".equals(result.getStatus())) {
+                        GetCommodityResponse.Commodity commodity = result.getCommodity();
+                        editText_name.setText(commodity.getCommodityName());
+                        editText.setText(commodity.getCommodityDescription());
+                        price.setText(commodity.getCommodityValueRaw());
+                        sort.setText(commodity.getCommodityClass());
+                        if (commodity.getAdditionalImages() != null) {
+                            for (String image : commodity.getAdditionalImages()) {
+                                Glide.with(UnusedActivity.this)
+                                        .downloadOnly()
+                                        .load(image)
+                                        .into(new CustomTarget<File>() {
+                                            @Override
+                                            public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
+                                                Uri localUri = Uri.fromFile(resource);
+                                                generateImg(localUri);
+                                                imageList.add(localUri);
+                                            }
+
+                                            @Override
+                                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                                                // Handle placeholder if needed
+                                            }
+                                        });
+                            }
+                        }
+                    } else {
+                        Toast.makeText(UnusedActivity.this, "获取商品信息失败: " + result.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(UnusedActivity.this, "获取商品信息失败，服务器返回错误", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetCommodityResponse> call, Throwable t) {
+                Toast.makeText(UnusedActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -201,16 +319,20 @@ public class UnusedActivity extends AppCompatActivity {
     }
 
     public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            String filePath = cursor.getString(columnIndex);
-            cursor.close();
-            return filePath;
+        if (contentUri.getScheme().equals("file")) {
+            return contentUri.getPath();
+        } else {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+                return filePath;
+            }
+            return null;
         }
-        return null;
     }
 
     private void openGallery() {
@@ -255,6 +377,7 @@ public class UnusedActivity extends AppCompatActivity {
         frameLayout.addView(roundedImageView1);
         ((FlexboxLayout)imageview.getParent()).addView(frameLayout,0);
     }
+
     private int dpToPx(Context context, int dp) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
