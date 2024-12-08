@@ -507,18 +507,18 @@ public class UnusedActivity extends AppCompatActivity {
             int in = et_input.getText().toString().indexOf('.');
             if(in!=-1){
                 if(et_input.getText().toString().
-                        indexOf('.',et_input.getText().toString().indexOf('.'))!=-1){
-                    Toast.makeText(this,"输入格式不正确", Toast.LENGTH_LONG).show();
+                        indexOf('.',in+1)!=-1){
+                    Toast.makeText(this,"输入格式不正确1", Toast.LENGTH_LONG).show();
                     return;
                 } else if(et_input.getText().toString().length()-in >3){
-                    Toast.makeText(this,"输入格式不正确", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,"输入格式不正确2", Toast.LENGTH_LONG).show();
                     return;
                 } else if(in > 1 && et_input.getText().toString().charAt(0)=='0'){
-                    Toast.makeText(this,"输入格式不正确", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,"输入格式不正确3", Toast.LENGTH_LONG).show();
                     return;
                 }
             }else if(et_input.getText().toString().charAt(0)=='0'){
-                Toast.makeText(this,"输入格式不正确", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"输入格式不正确4", Toast.LENGTH_LONG).show();
                 return;
             }
             price.setText(et_input.getText());

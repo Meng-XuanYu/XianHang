@@ -3,6 +3,7 @@ package Search;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -31,10 +32,15 @@ import com.google.android.flexbox.AlignItems;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.JustifyContent;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import Main.SearchDoneActivity;
@@ -85,6 +91,22 @@ public class SearchDetailActivity extends AppCompatActivity {
             }
             Intent intent = new Intent(SearchDetailActivity.this, SearchDoneActivity.class);
             intent.putExtra("text", editText.getText().toString());
+            SharedPreferences sharedPreferences = getSharedPreferences("search_history", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            Gson gson = new Gson();
+            List<String> searchHistoryList = new ArrayList<>();
+
+            String json = sharedPreferences.getString("search_history", null);
+            if (json != null) {
+                Type type = new TypeToken<List<String>>() {}.getType();
+                searchHistoryList = gson.fromJson(json, type);
+            }
+
+            searchHistoryList.add(editText.getText().toString());
+
+            String newJson = gson.toJson(searchHistoryList);
+            editor.putString("search_history", newJson);
+            editor.apply();
             startActivity(intent);
             finish();
         });
@@ -98,7 +120,6 @@ public class SearchDetailActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-        ;
 
         editText.requestFocus();
         imageView.setOnClickListener(view -> finish());
@@ -111,10 +132,19 @@ public class SearchDetailActivity extends AppCompatActivity {
         newLinearLayout.setFlexWrap(FlexWrap.WRAP);
         newLinearLayout.setAlignItems(AlignItems.FLEX_START);
         newLinearLayout.setJustifyContent(JustifyContent.FLEX_START);
-        Context context = this;
         newLinearLayout.setLayoutParams(new FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.MATCH_PARENT, FlexboxLayout.LayoutParams.WRAP_CONTENT));
-        List<String> list = Arrays.asList("历史搜索项 1", "历史搜索项 2", "历史搜索项 3", "历史搜索项 4", "历史搜索项 5", "历史搜索项 6", "历史搜索项 7");
-        for (String str : list) {
+        SharedPreferences sharedPreferences = getSharedPreferences("search_history", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        List<String> searchHistoryList = new ArrayList<>();
+
+        String json = sharedPreferences.getString("search_history", null);
+        if (json != null) {
+            Type type = new TypeToken<List<String>>() {}.getType();
+            searchHistoryList = gson.fromJson(json, type);
+        }
+
+        for (int i = 0; i < searchHistoryList.size() && i < 7; i++) {
+            String str = searchHistoryList.get(i);
             FlexboxLayout Layout = new FlexboxLayout(this);
             Layout.setFlexWrap(FlexWrap.WRAP);
             Layout.setAlignItems(AlignItems.FLEX_START);
@@ -138,7 +168,49 @@ public class SearchDetailActivity extends AppCompatActivity {
                 editText.setSelection(editText.getText().length());
             });
         }
+        searchHistory.addView(newLinearLayout);
+
+        FlexboxLayout.LayoutParams params11 = new FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT);
+        params11.setMargins(15, 10, 15, 10);
+
+        FlexboxLayout.LayoutParams params21 = new FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT);
+
+        FlexboxLayout newLinearLayout1 = new FlexboxLayout(this);
+        newLinearLayout1.setFlexWrap(FlexWrap.WRAP);
+        newLinearLayout1.setAlignItems(AlignItems.FLEX_START);
+        newLinearLayout1.setJustifyContent(JustifyContent.FLEX_START);
+        newLinearLayout1.setLayoutParams(new FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.MATCH_PARENT, FlexboxLayout.LayoutParams.WRAP_CONTENT));
+        List<String> list = Arrays.asList("手机", "电脑", "耳机", "鼠标", "键盘", "显示器", "电视", "冰箱", "洗衣机", "空调", "电饭煲", "电磁炉");
+
+        Collections.shuffle(list);
+
+        List<String> randomItems = list.subList(0, 3);
+        for (String str : randomItems) {
+            FlexboxLayout Layout = new FlexboxLayout(this);
+            Layout.setFlexWrap(FlexWrap.WRAP);
+            Layout.setAlignItems(AlignItems.FLEX_START);
+            Layout.setJustifyContent(JustifyContent.FLEX_START);
+            Drawable drawable = getResources().getDrawable(R.drawable.search_bg);
+            Layout.setBackground(drawable);
+            Layout.setPadding(10, 10, 10, 10);
+            Layout.setLayoutParams(params11);
+            TextView textView = new TextView(this);
+            textView.setText(str);
+            textView.setTextSize(10);  // 设置字体大小
+            textView.setTextColor(Color.BLACK);  // 设置字体颜色
+            textView.setPadding(10, 10, 0, 10);  // 设置内边距
+            textView.setLayoutParams(params21);
+            Layout.addView(textView);
+            newLinearLayout1.addView(Layout);
+
+            Layout.setOnClickListener(view -> {
+                editText.setText(((TextView) ((FlexboxLayout) view).getChildAt(0)).getText());
+                editText.setSelection(editText.getText().length());
+            });
+        }
+        searchGuess.addView(newLinearLayout1);
         View rootView = findViewById(android.R.id.content);
+
 
         rootView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -161,25 +233,6 @@ public class SearchDetailActivity extends AppCompatActivity {
                 return false;
             }
         });
-        editText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                // 处理回车键事件
-                Log.d("Keyboard", "Enter key pressed!");
-                // 在这里处理回车键事件，比如提交数据
-                return true;  // 返回 true 表示事件已处理
-            }
-            return false;
-        });
-        searchHistory.addView(newLinearLayout);
 
-    }
-
-
-    private int dpToPx(Context context, int dp) {
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                context.getResources().getDisplayMetrics()
-        );
     }
 }
