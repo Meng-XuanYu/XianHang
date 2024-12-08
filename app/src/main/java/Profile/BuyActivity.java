@@ -205,7 +205,7 @@ public class BuyActivity extends AppCompatActivity {
 
             TextView textView3 = new TextView(context);
             LinearLayout.LayoutParams textviewParams3 = new LinearLayout.LayoutParams(
-                    dpToPx(context,70),
+                    dpToPx(context,80),
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
 
@@ -227,17 +227,8 @@ public class BuyActivity extends AppCompatActivity {
             textviewParams4.setMargins(dpToPx(context,5),dpToPx(context,6),0,dpToPx(context,10));
             textView4.setLayoutParams(textviewParams4);
             textView4.setPadding(dpToPx(context,2),dpToPx(context,2),dpToPx(context,2),dpToPx(context,2));
-            int attractiveness = Integer.parseInt(item.getSellerAttractiveness());
-            if (attractiveness >= 500 && attractiveness < 550) {
-                credit="卖家信用一般";
-            } else if (attractiveness >= 550 && attractiveness < 750) {
-                credit="卖家信用良好";
-            } else if (attractiveness >= 750 && attractiveness < 1000) {
-                credit="卖家信用优秀";
-            } else if (attractiveness >= 1000) {
-                credit="卖家信用极好";
-            }
-            textView4.setText(credit);
+
+            textView4.setText(item.getTradeStatus());
             textView4.setTextSize(10);
             textView4.setBackgroundResource(R.drawable.sell_score);
             textView4.setTextColor(Color.parseColor("#f27000"));

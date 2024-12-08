@@ -32,8 +32,11 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.List;
 
+import Message.ChatActivity;
 import RetrofitClient.RetrofitClient;
 import goodsPage.ItemDetailActivity;
+import model.CommentTradeRequest;
+import model.CommentTradeResponse;
 import model.GetNeedCommentResponse;
 import model.GetProfileResponse;
 import network.ApiService;
@@ -226,7 +229,7 @@ public class EvaluateActivity extends AppCompatActivity {
             textView4.setText("待评价");
             textView4.setTextSize(10);
             textView4.setBackgroundResource(R.drawable.sell_score);
-            textView4.setOnClickListener(v->showRechargeDialog());
+            textView4.setOnClickListener(v->showRechargeDialog(item.getTradeId()));
             textView4.setTextColor(Color.parseColor("#f27000"));
             innerLayout.addView(textView4);
             itemLayout.addView(innerLayout);
@@ -247,19 +250,57 @@ public class EvaluateActivity extends AppCompatActivity {
 
     }
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void showRechargeDialog() {
+    private void showRechargeDialog(String tradeId) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(EvaluateActivity.this);
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_recharge, null);
+        View dialogView = inflater.inflate(R.layout.comment, null);
         builder.setView(dialogView)
                 .setTitle("评价")
                 .setBackground(getResources().getDrawable(R.drawable.rounded_background, null))
                 .setIcon(R.drawable.xianhang_light_fang)
                 .setPositiveButton("确认", (dialog, which) -> {
                     EditText editTextAmount = dialogView.findViewById(R.id.edit_text_amount);
-                    String str = editTextAmount.getText().toString();
+                    EditText editText = dialogView.findViewById(R.id.comment);
+                    if(Integer.parseInt(editTextAmount.getText().toString())<0&&Integer.parseInt(editTextAmount.getText().toString())>5){
+                        Toast.makeText(EvaluateActivity.this, "请输入保证输入的星级在0~5", Toast.LENGTH_SHORT).show();
+                    }
+                    String amountStr = editTextAmount.getText().toString();
+                    ApiService apiService = RetrofitClient.getApiService();
+                    if (!amountStr.isEmpty()) {
+                        apiService.commentTrade(new CommentTradeRequest(tradeId,Integer.parseInt(editTextAmount.getText().toString()),editText.getText().toString())).enqueue(new Callback<CommentTradeResponse>() {
+                            @Override
+                            public void onResponse(Call<CommentTradeResponse> call, Response<CommentTradeResponse> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    CommentTradeResponse getSingleTradeResponse = response.body();
+                                    if ("success".equals(getSingleTradeResponse.getStatus())) {
+                                        getMyEvaluate();
+                                    } else {
+                                        Toast.makeText(EvaluateActivity.this, "获取用户信息失败: ", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    try {
+                                        // 从 errorBody 获取错误信息
+                                        String errorJson = response.errorBody().string();
+                                        JSONObject errorObject = new JSONObject(errorJson);
+                                        String errorMessage = errorObject.optString("message", "未知错误");
+                                        Toast.makeText(EvaluateActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                        Log.e("getDetail", "Error: " + errorMessage);
+                                    } catch (Exception e) {
+                                        Toast.makeText(EvaluateActivity.this, "解析错误消息失败", Toast.LENGTH_SHORT).show();
+                                        Log.e("getDetail", "Error parsing error body: ", e);
+                                    }
+                                }
+                            }
 
-                    dialog.dismiss();
+                            @Override
+                            public void onFailure(Call<CommentTradeResponse> call, Throwable t) {
+                                Toast.makeText(EvaluateActivity.this, "网络请求失败: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.e("getDetail", "Request Failed: " + t.getMessage());
+                            }
+                        });
+                    } else {
+                        Toast.makeText(EvaluateActivity.this, "请输入充值金额", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
                 .show();

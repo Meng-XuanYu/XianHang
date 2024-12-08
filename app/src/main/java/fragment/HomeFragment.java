@@ -253,6 +253,11 @@ public class HomeFragment extends Fragment {
         for (; index<recommendations.size(); index++) {
             AIRecommendResponse.Recommendation item = recommendations.get(index);
             LinearLayout itemLayout = new LinearLayout(context);
+            if(index %2 == 0){
+                item_show1.addView(itemLayout);
+            } else   {
+                item_show2.addView(itemLayout);
+            }
             final int temp = Integer.parseInt(item.getCommodityId());
             itemLayout.setOnClickListener(view -> {
                 Intent intent = new Intent(requireActivity(), ItemDetailActivity.class);
@@ -373,15 +378,16 @@ public class HomeFragment extends Fragment {
             itemLayout.addView(innerLayout);
 
 
-            if(index %2 == 0){
-                item_show1.addView(itemLayout);
-            } else   {
-                item_show2.addView(itemLayout);
-            }
+
         }
         for (;index-recommendations.size() < items.size();index++) {
             GetCommodityListByClassResponse.Commodity item = items.get(index);
             LinearLayout itemLayout = new LinearLayout(context);
+            if(index %2 == 0){
+                item_show1.addView(itemLayout);
+            } else   {
+                item_show2.addView(itemLayout);
+            }
             final int temp = Integer.parseInt(item.getCommodityId());
             itemLayout.setOnClickListener(view -> {
                 Intent intent = new Intent(requireActivity(), ItemDetailActivity.class);
@@ -500,18 +506,8 @@ public class HomeFragment extends Fragment {
             textView4.setTextColor(Color.parseColor("#f27000"));
             innerLayout.addView(textView4);
             itemLayout.addView(innerLayout);
-
-
-            if(index %2 == 0){
-                item_show1.addView(itemLayout);
-            } else   {
-                item_show2.addView(itemLayout);
-            }
         }
-
     }
-
-
     // dp 转 px 工具函数
     private int dpToPx(Context context, float dp) {
         return (int) (dp * context.getResources().getDisplayMetrics().density);

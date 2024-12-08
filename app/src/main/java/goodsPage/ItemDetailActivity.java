@@ -56,6 +56,7 @@ import Main.UnusedActivity;
 import Message.ChatActivity;
 import Profile.BuyActivity;
 import RetrofitClient.RetrofitClient;
+import Search.SearchDetailActivity;
 import model.AIRecommendRequest;
 import model.AIRecommendResponse;
 import model.AddCollectionRequest;
@@ -172,7 +173,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         search.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 search.clearFocus();
-                Intent intent = new Intent(ItemDetailActivity.this, ItemDetailActivity.class);
+                Intent intent = new Intent(ItemDetailActivity.this, SearchDetailActivity.class);
                 startActivity(intent);
             }
         });
@@ -198,7 +199,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         // 搜索按钮
         search_img.setOnClickListener(view -> {
-            Intent intent = new Intent(ItemDetailActivity.this, ItemDetailActivity.class);
+            Intent intent = new Intent(ItemDetailActivity.this, SearchDetailActivity.class);
             startActivity(intent);
         });
 

@@ -175,7 +175,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginStart="5dp"
                 android:gravity="start"
-                android:text="你在闲航已经赚了3700.56元"
+                android:text="你在闲航kuku赚钱"
                 android:textColor="@color/gray"
                 android:textSize="12sp" />
         </LinearLayout>

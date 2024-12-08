@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import androidx.core.view.ViewCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.login.R;
+import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONObject;
@@ -30,6 +32,7 @@ import java.util.List;
 import RetrofitClient.RetrofitClient;
 import goodsPage.ItemDetailActivity;
 import model.GetMySellResponse;
+import model.GetProfileResponse;
 import network.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,6 +122,12 @@ public class SellActivity extends AppCompatActivity {
         if (items == null) {
             return;
         }
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String profileJson = sharedPreferences.getString("userProfile", null);
+        Gson gson = new Gson();
+        GetProfileResponse profile = gson.fromJson(profileJson, GetProfileResponse.class);
+        String userName = profile.getName();
+        String userAvatar = profile.getAvatar();
         for (GetMySellResponse.Trade item : items) {
             LinearLayout itemLayout = new LinearLayout(context);
             itemLayout.setOrientation(LinearLayout.VERTICAL);
@@ -171,6 +180,60 @@ public class SellActivity extends AppCompatActivity {
             textView2.setTypeface(null, Typeface.BOLD);
             textView2.setTextColor(Color.parseColor("#fd424b"));
             itemLayout.addView(textView2);
+
+            LinearLayout innerLayout = new LinearLayout(context);
+            LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            innerLayout.setLayoutParams(innerParams);
+            RoundedImageView innerRoundedImageView = new RoundedImageView(context);
+            LinearLayout.LayoutParams innerImageParams1 = new LinearLayout.LayoutParams(
+                    dpToPx(context,25),
+                    dpToPx(context,25)
+            );
+            innerImageParams1.setMargins(dpToPx(context,10),dpToPx(context,5),0,dpToPx(context,10));
+            innerRoundedImageView.setLayoutParams(innerImageParams1);
+            innerRoundedImageView.setBackgroundResource(R.drawable.img);
+            innerRoundedImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            Glide.with(context)
+                    .load(userAvatar)
+                    .placeholder(R.drawable.img)  // 占位图
+                    .error(R.drawable.img).into(innerRoundedImageView);
+            innerRoundedImageView.setCornerRadius(dpToPx(context,12.5f));
+            innerLayout.addView(innerRoundedImageView);
+
+            TextView textView3 = new TextView(context);
+            LinearLayout.LayoutParams textviewParams3 = new LinearLayout.LayoutParams(
+                    dpToPx(context,80),
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            textviewParams3.setMargins(dpToPx(context,7),dpToPx(context,7),0,dpToPx(context,10));
+            textView3.setLayoutParams(textviewParams3);
+            textView3.setPadding(dpToPx(context,4),0,0,0);
+            textView3.setText(userName);
+            textView3.setTextSize(14);
+            textView3.setMaxLines(1);
+            textView3.setEllipsize(TextUtils.TruncateAt.END);
+            textView3.setTextColor(Color.parseColor("#979598"));
+            innerLayout.addView(textView3);
+
+            TextView textView4 = new TextView(context);
+            LinearLayout.LayoutParams textviewParams4 = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            textviewParams4.setMargins(dpToPx(context,5),dpToPx(context,6),0,dpToPx(context,10));
+            textView4.setLayoutParams(textviewParams4);
+            textView4.setPadding(dpToPx(context,2),dpToPx(context,2),dpToPx(context,2),dpToPx(context,2));
+
+            textView4.setText(item.getTradeStatus());
+            textView4.setTextSize(10);
+            textView4.setBackgroundResource(R.drawable.sell_score);
+            textView4.setTextColor(Color.parseColor("#f27000"));
+            innerLayout.addView(textView4);
+            itemLayout.addView(innerLayout);
 
             final int temp = Integer.parseInt(item.getCommodityId());
             itemLayout.setOnClickListener(view -> {

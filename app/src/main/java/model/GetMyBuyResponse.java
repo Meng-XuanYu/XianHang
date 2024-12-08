@@ -26,7 +26,7 @@ public class GetMyBuyResponse {
         private String commodityId;
         private String commodityName;
         private String commodityDescription;
-        private int commodityValue;
+        private Double commodityValue;
         private String commodityClass;
         private String commodityImage;
 

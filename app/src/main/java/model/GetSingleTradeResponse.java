@@ -22,7 +22,7 @@ public class GetSingleTradeResponse {
         private String commodityId;
         private String commodityName;
         private String commodityDescription;
-        private int commodityValue;
+        private Double commodityValue;
         private String commodityImage;
         private String sellerId;
         private String tradeStatus;
@@ -32,7 +32,7 @@ public class GetSingleTradeResponse {
         public String getCommodityId() { return commodityId; }
         public String getCommodityName() { return commodityName; }
         public String getCommodityDescription() { return commodityDescription; }
-        public int getCommodityValue() { return commodityValue; }
+        public String getCommodityValue() { return commodityValue.toString(); }
         public String getCommodityImage() { return commodityImage; }
         public String getSellerId() { return sellerId; }
         public String getTradeStatus() { return tradeStatus; }
