@@ -10,7 +10,7 @@
         android:id="@+id/img"
         android:layout_marginTop="100dp"
         android:layout_width="200dp"
-        android:layout_marginLeft="100dp"
+        android:layout_gravity="center_horizontal"
         android:layout_height="200dp"
 
         app:riv_corner_radius="10dp"
@@ -24,12 +24,13 @@
         android:text="AI 识别中"
         android:textSize="30dp"
         android:textColor="@color/blue_bh"
-        android:layout_marginLeft="140dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:gravity="center">
 
         <!-- 小球1 -->

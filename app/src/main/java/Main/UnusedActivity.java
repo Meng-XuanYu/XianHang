@@ -141,6 +141,9 @@ public class UnusedActivity extends AppCompatActivity {
             editText_name.setText(getIntent().getStringExtra("commodityName"));
             editText.setText(getIntent().getStringExtra("commodityDescription"));
             price.setText(getIntent().getStringExtra("commodityValue"));
+            if (getIntent().getStringExtra("commodityValue").equals("面议")) {
+                price.setText("999999");
+            }
             Uri selectedImageUri = Uri.parse(getIntent().getStringExtra("commodityImage"));
             generateImg(selectedImageUri); // 加载图片到 ImageView
             imageList.add(selectedImageUri);
