@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 
 import com.example.login.R;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -39,12 +42,11 @@ public class WaitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wait);
         String imageUri = getIntent().getStringExtra("imageUri");
         uri = Uri.parse(imageUri);
-        // 沉浸式体验
-//        getWindow().getDecorView().setSystemUiVisibility(
-//                View.SYSTEM_UI_FLAG_FULLSCREEN |
-//                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//        );
+        ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+        View mChildView = mContentView.getChildAt(0);
+        if (mChildView != null) {
+            ViewCompat.setFitsSystemWindows(mChildView, true);
+        }
 
         roundedImageView = findViewById(R.id.img);
 

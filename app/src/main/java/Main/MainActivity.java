@@ -9,12 +9,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.login.R;
@@ -52,12 +55,11 @@ public class MainActivity extends AppCompatActivity {
         // Register the receiver
         LocalBroadcastManager.getInstance(this).registerReceiver(refreshReceiver, new IntentFilter("ACTION_REFRESH_FRAGMENT"));
 
-        // 沉浸式体验
-//        getWindow().getDecorView().setSystemUiVisibility(
-//                View.SYSTEM_UI_FLAG_FULLSCREEN |
-//                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//        );
+        ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+        View mChildView = mContentView.getChildAt(0);
+        if (mChildView != null) {
+            ViewCompat.setFitsSystemWindows(mChildView, true);
+        }
 
         this.mNavigateTabBar = findViewById(R.id.main_tabbar);
         this.mTabMoreIv = findViewById(R.id.tab_more_iv);

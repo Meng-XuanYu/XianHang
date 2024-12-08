@@ -11,12 +11,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.login.R;
@@ -67,12 +69,11 @@ public class SortActivity extends AppCompatActivity {
         item_show1 = findViewById(R.id.d_item_show1);
         item_show2 = findViewById(R.id.d_item_show2);
         search_layout = findViewById(R.id.search_layout);
-        // 沉浸式体验
-//        getWindow().getDecorView().setSystemUiVisibility(
-//                View.SYSTEM_UI_FLAG_FULLSCREEN |
-//                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-//                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//        );
+        ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+        View mChildView = mContentView.getChildAt(0);
+        if (mChildView != null) {
+            ViewCompat.setFitsSystemWindows(mChildView, true);
+        }
 
         search_layout.setOnClickListener(view -> {
             Intent intent = new Intent(SortActivity.this, SearchDetailActivity.class);

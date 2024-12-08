@@ -2,8 +2,11 @@ package goodsPage;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.login.R;
@@ -18,12 +21,12 @@ public class FullscreenActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_fullscreen);
 
-            // 沉浸式体验
-//            getWindow().getDecorView().setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_FULLSCREEN |
-//                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-//                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//            );
+
+            ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                ViewCompat.setFitsSystemWindows(mChildView, true);
+            }
 
             ViewPager2 viewPager = findViewById(R.id.viewPager);
 
